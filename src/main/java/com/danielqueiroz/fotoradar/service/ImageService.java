@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.service;
 
+import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
 import com.danielqueiroz.fotoradar.model.Image;
 import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.repository.ImageRepo;
@@ -20,6 +21,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Transactional
 @Slf4j
@@ -30,12 +32,16 @@ public class ImageService {
     private ImageRepo imageRepo;
     private UserService userService;
 
-    public Image save(String link) throws Exception {
+    public Image save(String link, String name) throws Exception {
+        boolean hasImage = !Objects.isNull(imageRepo.findImageByLink(link));
+        if (hasImage) {
+            throw new AlreadyExistException("Imagem já salva") ;
+        }
         StringBuffer content = new StringBuffer();
         try {
             getImage(link, content);
         } catch (MalformedURLException | ProtocolException e) {
-            throw new Exception("Falha ao carregar imagem");
+            throw new Exception("Não foi possível carregar a imagem. Motivo: " + e.getMessage());
         }
 
         String encodedString = Base64.getEncoder().encodeToString(content.toString().getBytes());
@@ -46,12 +52,16 @@ public class ImageService {
         User user = userService.getUser(username);
         Image image = Image.builder()
                 .blob(encodedString)
+                .name(name)
                 .link(link)
                 .user(user)
                 .build();
         return imageRepo.save(image);
     }
 
+    public Image findImageByLink(String link) {
+        return imageRepo.findImageByLink(link);
+    };
     private void getImage(String link, StringBuffer content) throws IOException {
         URL url = new URL(link);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "image_table")
+@Table(name = "image")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,6 +25,7 @@ public class Image {
     @Column(name = "image_id")
     private Long id;
     private String name;
+    private String description;
 
     @ManyToOne
     private User user;
