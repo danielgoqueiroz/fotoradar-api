@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "security.oauth2.client.clientId",
+      "type": "java.lang.String",
+      "description": "Description for security.oauth2.client.clientId."
+    },
+    {
+      "name": "security.oauth2.client.clientSecret",
+      "type": "java.lang.String",
+      "description": "Description for security.oauth2.client.clientSecret."
+    },
+    {
+      "name": "security.oauth2.client.authorized-grant-types",
+      "type": "java.lang.String",
+      "description": "Description for security.oauth2.client.authorized-grant-types."
+    },
+    {
+      "name": "security.oauth2.client.scope",
+      "type": "java.lang.String",
+      "description": "Description for security.oauth2.client.scope."
+    }
+  ] }

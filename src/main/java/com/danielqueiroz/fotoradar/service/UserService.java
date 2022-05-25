@@ -1,0 +1,16 @@
+package com.danielqueiroz.fotoradar.service;
+
+import com.danielqueiroz.fotoradar.model.Role;
+import com.danielqueiroz.fotoradar.model.User;
+
+import java.util.List;
+
+public interface UserService {
+
+    User saveUser(User user);
+    Role saveRole(Role role);
+    void addRoleToUser(String username, String roleName);
+    User getUser(String username);
+    List<User> getUsers();
+
+}
