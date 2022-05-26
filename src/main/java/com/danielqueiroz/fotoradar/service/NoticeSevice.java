@@ -31,6 +31,10 @@ public class NoticeSevice {
         return noticeRepo.findAll();
     }
 
+    public Notice getnoticeById(String id) {
+        return noticeRepo.findNoticeById(id);
+    }
+
     public Notice save(String username, String url) throws NoticeException {
         String hash = getHash(url);
         Notice noticeOnDatabase = noticeRepo.findFirstByLinkHash(hash);
@@ -48,4 +52,7 @@ public class NoticeSevice {
         return noticeRepo.save(notice);
     }
 
+    public void addImageOnNotice(String idImage, String idNotice) {
+        Notice notice = getnoticeById(idNotice);
+    }
 }

@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NoticeRepo extends JpaRepository<Notice, Long> {
     Notice findFirstByLinkHash(String hash);
+    Notice findNoticeById(String id);
 }

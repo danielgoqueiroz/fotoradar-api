@@ -30,7 +30,6 @@ public class NoticeController {
         return ok().body(noticeService.getLinks());
     }
 
-
     @PostMapping("/")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveUsage(@RequestParam String link) {
@@ -43,6 +42,13 @@ public class NoticeController {
         } catch (NoticeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> addImageOnUsage(@RequestParam String idNotice, @RequestParam String idImage) {
+        noticeService.addImageOnNotice(idImage, idNotice);
         return ResponseEntity.ok().build();
     }
 

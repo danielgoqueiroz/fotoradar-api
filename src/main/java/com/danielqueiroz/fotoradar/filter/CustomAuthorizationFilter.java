@@ -23,8 +23,7 @@ import static com.danielqueiroz.fotoradar.contants.Const.ROLES;
 import static com.danielqueiroz.fotoradar.conf.PropertiesLoader.getSecret;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Configuration
@@ -32,7 +31,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals("/api/login")) {
+        String requestservletPath = request.getServletPath();
+        if (requestservletPath.equals("/api/user/save")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if (requestservletPath.equals("/api/login")) {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);

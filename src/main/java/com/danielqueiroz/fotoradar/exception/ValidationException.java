@@ -5,7 +5,6 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class AlreadyExistException extends Exception {
+public class ValidationException extends Exception {
     private String message;
-
 }

@@ -1,5 +1,7 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
+import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
+import com.danielqueiroz.fotoradar.exception.ValidationException;
 import com.danielqueiroz.fotoradar.model.Role;
 import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.service.UserService;
@@ -30,7 +32,7 @@ public class DevController {
 	}
 
 	@GetMapping("/dev")
-	public ResponseEntity<?> dev() {
+	public ResponseEntity<?> dev() throws AlreadyExistException, ValidationException {
 		log.info("Salvando usuário dev");
 		Role role = Role.builder()
 				.name("USER")

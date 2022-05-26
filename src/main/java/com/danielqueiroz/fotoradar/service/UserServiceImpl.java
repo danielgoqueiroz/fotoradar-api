@@ -1,9 +1,12 @@
 package com.danielqueiroz.fotoradar.service;
 
+import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
+import com.danielqueiroz.fotoradar.exception.ValidationException;
 import com.danielqueiroz.fotoradar.repository.RoleRepo;
 import com.danielqueiroz.fotoradar.repository.UserRepo;
 import com.danielqueiroz.fotoradar.model.Role;
 import com.danielqueiroz.fotoradar.model.User;
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,10 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,15 +30,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User saveUser(User user) {
-        User usernameFromDatabase = userRepo.findByUsername(user.getUsername());
-        if(usernameFromDatabase != null) {
-            return null;
-        }
+    public User saveUser(User user) throws AlreadyExistException, ValidationException {
+        validateUser(user);
 
         log.info("Salvando usuário {}", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
+    }
+
+    private void validateUser(User user) throws AlreadyExistException, ValidationException {
+        boolean exists = !Objects.isNull(getUser(user.getUsername()));
+        if (exists) {
+            throw  new AlreadyExistException("Usuário já cadastrado");
+        }
+
+        String password = user.getPassword();
+        if (Strings.isNullOrEmpty(password)) {
+            throw  new ValidationException("Senha não informada.");
+        }
+        if (password.length() < 5) {
+            throw  new ValidationException("Senha precisa ter pelo menos 6 dígitos.");
+        }
     }
 
     @Override
