@@ -1,4 +1,7 @@
 
+TODO
+[x]-Cadastrar imagem
+[x]-Cadastrar 
 Rest
 https://spring.io/guides/tutorials/rest/
 
