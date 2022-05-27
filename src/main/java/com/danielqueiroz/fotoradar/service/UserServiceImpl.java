@@ -97,4 +97,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
+
+    @Override
+    public void updateUser(User userToUpdate) throws ValidationException, AlreadyExistException {
+        User user = userRepo.findByUsername(userToUpdate.getUsername());
+        user.setUsername(userToUpdate.getUsername());
+        user.setCpf(userToUpdate.getCpf());
+        user.setName(userToUpdate.getName());
+        user.setEmail(userToUpdate.getEmail());
+        user.setPassword(userToUpdate.getPassword());
+        saveUser(user);
+    }
 }

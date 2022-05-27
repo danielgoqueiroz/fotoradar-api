@@ -21,7 +21,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserServiceImpl userService;
@@ -30,12 +30,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
+    @GetMapping("")
     public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
-    @PostMapping(value = "/user/save", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveUser(@RequestBody UserDTO user) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/save").toUriString());
         try {
@@ -57,13 +57,35 @@ public class UserController {
         }
     }
 
+    @PutMapping (value = "", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateUser(@RequestBody UserDTO user) {
+
+        try {
+            userService.updateUser(
+                    User
+                            .builder()
+                            .username(user.getUsername())
+                            .password(user.getPassword())
+                            .name(user.getName())
+                            .cpf(user.getCpf())
+                            .email(user.getEmail())
+                            .build()
+            );
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(ErrorMessage.builder().message(e.getMessage()));
+        } catch (AlreadyExistException e) {
+            return ResponseEntity.badRequest().body(ErrorMessage.builder().message(e.getMessage()));
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
-    @PostMapping("/role/addtosave")
+    @PostMapping("/role/add-on-user")
     public ResponseEntity addToUser(@RequestBody RoleToUserForm roleToUserForm) {
         userService.addRoleToUser(roleToUserForm.getUsername(), roleToUserForm.getRole());
         return ResponseEntity.ok().build();
