@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User getUser(String username) {
-        log.info("Buscanod usuário {}", username );
+        log.info("Buscando usuário {}", username );
         return userRepo.findByUsername(username);
     }
 

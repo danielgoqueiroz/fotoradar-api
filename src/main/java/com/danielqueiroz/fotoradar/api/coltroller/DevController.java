@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 @Slf4j
 public class DevController {
 
@@ -50,6 +52,11 @@ public class DevController {
 		Optional<User> userSaved = Optional.of(userService.saveUser(user));
 
 		return ok().body(String.format("usuário salvo %s", userSaved));
+	}
+
+	@GetMapping("/status")
+	public ResponseEntity<?> status() throws AlreadyExistException, ValidationException {
+		return ok().body("Service is running");
 	}
 
 }

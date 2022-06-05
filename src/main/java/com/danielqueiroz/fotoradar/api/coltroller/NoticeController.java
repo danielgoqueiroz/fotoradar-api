@@ -25,13 +25,13 @@ public class NoticeController {
         this.noticeService = noticeService;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Notice>> getLinks() {
         return ok().body(noticeService.getLinks());
     }
 
-    @PostMapping("/")
-    @PreAuthorize("hasRole('USER')")
+    @PostMapping("")
+//    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveUsage(@RequestParam String link) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username =  (String) auth.getPrincipal();

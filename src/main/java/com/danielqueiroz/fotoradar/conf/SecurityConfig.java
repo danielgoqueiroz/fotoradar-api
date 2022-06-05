@@ -14,6 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -41,9 +43,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
 //        customAuthenticationFilter.setFilterProcessesUrl("/api/user/save");
         http.csrf().disable();
+        http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        http.authorizeRequests().antMatchers("/api/login/**", "/api/dev/**").permitAll();
-        http.authorizeRequests().antMatchers(GET, "/api/image/**", "/api/user/**").authenticated();
+        http.authorizeRequests().antMatchers("/api/status/**").permitAll();
+        http.authorizeRequests().antMatchers(POST, "/api/image/**", "/api/user/**", "/api/notice/**").authenticated();
+        http.authorizeRequests().antMatchers(GET, "/api/image/**", "/api/user/**", "/api/notice/**").authenticated();
 //        http.authorizeRequests().antMatchers(GET, "/api/user**", "/api/image/**", "/api/notice/**").hasAnyAuthority("ROLE_USER");
 //        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").permitAll();
         http.authorizeRequests().antMatchers("/api/user/**").authenticated();

@@ -22,6 +22,7 @@ import static org.springframework.http.MediaType.*;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class UserController {
 
     private final UserServiceImpl userService;

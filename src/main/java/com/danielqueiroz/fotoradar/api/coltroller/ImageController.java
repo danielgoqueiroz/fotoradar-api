@@ -12,20 +12,20 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/image")
 @AllArgsConstructor
 public class ImageController {
 
     private ImageService imageService;
 
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/image")
+//    @PreAuthorize("hasRole('USER')")
+    @GetMapping("")
     public ResponseEntity<?> findImages() {
         return ok().body(imageService.findAll());
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping(value = "/image/save" , produces = MediaType.APPLICATION_JSON_VALUE)
+//    @PreAuthorize("hasRole('USER')")
+    @PostMapping(value = "" , produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveImage(@RequestBody ImageDTO image) {
         try {
             return ok().body(imageService.save(image.getLink(), image.getName()));
