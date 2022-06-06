@@ -25,7 +25,7 @@ public class ImageController {
     }
 
 //    @PreAuthorize("hasRole('USER')")
-    @PostMapping(value = "" , produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "" , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveImage(@RequestBody ImageDTO image) {
         try {
             return ok().body(imageService.save(image.getLink(), image.getName()));

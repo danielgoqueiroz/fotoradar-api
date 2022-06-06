@@ -34,14 +34,15 @@ public class ImageService {
 
     public Image save(String link, String name) throws Exception {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username =  (String) auth.getPrincipal();
-        User user = userService.getUser(username);
-
         boolean hasImage = !Objects.isNull(imageRepo.findImageByLink(link));
         if (hasImage) {
             throw new AlreadyExistException("Imagem já salva") ;
         }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username =  (String) auth.getPrincipal();
+        User user = userService.getUser(username);
+
         StringBuffer content = new StringBuffer();
         try {
             getImage(link, content);
