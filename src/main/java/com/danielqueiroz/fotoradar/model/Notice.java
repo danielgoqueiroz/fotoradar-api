@@ -17,7 +17,6 @@ import javax.persistence.*;
 public class Notice {
 
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "notice_id")
     private Long id;

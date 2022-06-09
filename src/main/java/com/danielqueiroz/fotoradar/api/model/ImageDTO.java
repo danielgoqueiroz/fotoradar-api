@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Builder
 public class ImageDTO {
 
+    private Long id;
     private String link;
     private String name;
     private String description;

@@ -47,7 +47,7 @@ public class NoticeController {
 
     @PostMapping("/add-image-on-notice")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addImageOnUsage(@RequestParam String idNotice, @RequestParam String idImage) {
+    public ResponseEntity<?> addImageOnUsage(@RequestParam Long idNotice, @RequestParam Long idImage) {
         noticeService.addImageOnNotice(idImage, idNotice);
         return ResponseEntity.ok().build();
     }

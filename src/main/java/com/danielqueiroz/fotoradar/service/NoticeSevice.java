@@ -1,8 +1,10 @@
 package com.danielqueiroz.fotoradar.service;
 
 import com.danielqueiroz.fotoradar.exception.NoticeException;
+import com.danielqueiroz.fotoradar.model.Image;
 import com.danielqueiroz.fotoradar.model.Notice;
 import com.danielqueiroz.fotoradar.model.User;
+import com.danielqueiroz.fotoradar.repository.ImageRepo;
 import com.danielqueiroz.fotoradar.repository.NoticeRepo;
 import com.danielqueiroz.fotoradar.repository.UserRepo;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 
@@ -19,10 +20,12 @@ import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 @Service
 public class NoticeSevice {
 
+    private final ImageRepo imageRepo;
     private final NoticeRepo noticeRepo;
     private final UserRepo userRepo;
 
-    public NoticeSevice(NoticeRepo usageRepo, UserRepo userRepo) {
+    public NoticeSevice(ImageRepo imageRepo, NoticeRepo usageRepo, UserRepo userRepo) {
+        this.imageRepo = imageRepo;
         this.noticeRepo = usageRepo;
         this.userRepo = userRepo;
     }
@@ -31,7 +34,7 @@ public class NoticeSevice {
         return noticeRepo.findAll();
     }
 
-    public Notice getnoticeById(String id) {
+    public Notice getnoticeById(Long id) {
         return noticeRepo.findNoticeById(id);
     }
 
@@ -52,7 +55,9 @@ public class NoticeSevice {
         return noticeRepo.save(notice);
     }
 
-    public void addImageOnNotice(String idImage, String idNotice) {
+    public void addImageOnNotice(Long idImage, Long idNotice) {
+        Image image = imageRepo.getById(idImage);
         Notice notice = getnoticeById(idNotice);
+        notice.setImage(image);
     }
 }
