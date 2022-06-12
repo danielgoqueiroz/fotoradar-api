@@ -1,7 +1,13 @@
 
 TODO
-[x]-Cadastrar imagem
-[x]-Cadastrar 
+## Imagem
+[x]-Cadastrar
+## Notice
+[ ] - Dado uma imagem cadastrar notice
+[ ] - Quando cadastrar Notificação vincular Compania caso já exista ou cadastrar nova compania e vincular a Notificação caso não exista
+## Company
+Editar compania que existe
+
 Rest
 https://spring.io/guides/tutorials/rest/
 

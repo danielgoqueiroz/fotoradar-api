@@ -31,4 +31,7 @@ public class Notice {
     @ManyToOne
     private Image image;
 
+    @ManyToOne
+    private Company company;
+
 }

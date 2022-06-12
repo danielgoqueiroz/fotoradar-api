@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,6 +42,8 @@ public class NoticeController {
             usageSaved = noticeService.save(username, link);
         } catch (NoticeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
@@ -63,6 +66,8 @@ public class NoticeController {
                 return noticeService.save(username, link);
             } catch (NoticeException e) {
                 throw new RuntimeException(e.getMessage());
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
             }
         }).collect(Collectors.toList());
 
