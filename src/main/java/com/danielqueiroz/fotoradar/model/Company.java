@@ -17,7 +17,8 @@ import java.util.List;
 public class Company {
 
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "company_id")
     private Long id;
 
     private String name;
@@ -25,7 +26,7 @@ public class Company {
     private String suidResponsable;
     private String phone;
     private String address;
-    private String website;
+    private String host;
     private String mail;
 
     @OneToMany

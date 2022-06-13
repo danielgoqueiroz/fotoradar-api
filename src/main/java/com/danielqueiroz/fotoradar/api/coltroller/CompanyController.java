@@ -6,6 +6,7 @@ import com.danielqueiroz.fotoradar.model.Notice;
 import com.danielqueiroz.fotoradar.service.CompanySevice;
 import com.danielqueiroz.fotoradar.service.NoticeSevice;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/api/company")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class CompanyController {
 
     private final CompanySevice companySevice;
@@ -28,6 +30,11 @@ public class CompanyController {
     @GetMapping("")
     public ResponseEntity<List<Company>> getCompanies() {
         return ok().body(companySevice.findCompanies());
+    }
+
+    @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
+        return ok().body(companySevice.updateCompany(company));
     }
 
 //    @PostMapping("")

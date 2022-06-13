@@ -39,29 +39,34 @@ public class NoticeSevice {
         return noticeRepo.findNoticeById(id);
     }
 
-    public Notice save(String username, String url) throws NoticeException, MalformedURLException {
+    public Notice save(String username, String url, Long imageId) throws NoticeException, MalformedURLException {
         String hash = getHash(url);
         Notice noticeOnDatabase = noticeRepo.findFirstByLinkHash(hash);
         if(noticeOnDatabase != null) {
            return null;
         }
-        if (noticeOnDatabase.getCompany() == null) {
-            String urlObject = new URL(url).getHost().toString();
-            Company company = Company.builder()
-                    .website(urlObject)
+
+        String host = new URL(url).getHost();
+        Company company = companyRepo.findFirstCompanyByHost(host);
+        if (company == null) {
+            company = Company.builder()
+                    .host(host)
                     .build();
-            Company companySaved = companyRepo.save(company);
-            noticeOnDatabase.setCompany(companySaved);
+            companyRepo.save(company);
         }
         User user = userRepo.findByUsername(username);
+        Image image = imageRepo.getById(imageId);
 
         Notice notice = Notice.builder()
                 .user(user)
                 .link(url)
+                .image(image)
                 .linkHash(hash)
+                .company(company)
                 .build();
 
-        return noticeRepo.save(notice);
+        Notice noticeSaved = noticeRepo.save(notice);
+        return noticeSaved;
     }
 
     public void addImageOnNotice(Long idImage, Long idNotice) {

@@ -3,6 +3,7 @@ package com.danielqueiroz.fotoradar.api.coltroller;
 import com.danielqueiroz.fotoradar.exception.NoticeException;
 import com.danielqueiroz.fotoradar.model.Notice;
 import com.danielqueiroz.fotoradar.service.NoticeSevice;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -31,21 +33,21 @@ public class NoticeController {
         return ok().body(noticeService.getLinks());
     }
 
-    @PostMapping("")
+    @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
 //    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> saveUsage(@RequestParam String link) {
+    public ResponseEntity<?> saveUsage(@RequestParam String link, @RequestParam Long imageId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username =  (String) auth.getPrincipal();
 
         Notice usageSaved = null;
         try {
-            usageSaved = noticeService.save(username, link);
+            usageSaved = noticeService.save(username, link, imageId);
         } catch (NoticeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(usageSaved);
     }
 
     @PostMapping("/add-image-on-notice")
@@ -55,34 +57,34 @@ public class NoticeController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/links")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> saveLinks(@RequestBody List<String> links) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username =  (String) auth.getPrincipal();
-
-        List<Notice> linksProcessed = links.stream().map(link -> {
-            try {
-                return noticeService.save(username, link);
-            } catch (NoticeException e) {
-                throw new RuntimeException(e.getMessage());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList());
-
-        List<Notice> linksIgnored = linksProcessed.stream().filter(l -> Objects.isNull(l)).collect(Collectors.toList());
-        List<Notice> linksSaved = linksProcessed.stream().filter(l -> Objects.nonNull(l)).collect(Collectors.toList());
-        if (linksSaved.isEmpty()) {
-            return ResponseEntity.badRequest().body(
-                    "Nenhum registro salvo"
-            );
-        } else {
-            return ResponseEntity.ok().body(
-                    String.format("%s registros ignorados. %s salvos com sucesso",linksIgnored.size(),  linksSaved.size())
-            );
-        }
-    }
+//    @PostMapping("/links")
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<?> saveLinks(@RequestBody List<String> links) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        String username =  (String) auth.getPrincipal();
+//
+//        List<Notice> linksProcessed = links.stream().map(link -> {
+//            try {
+//                return noticeService.save(username, link, imageId);
+//            } catch (NoticeException e) {
+//                throw new RuntimeException(e.getMessage());
+//            } catch (MalformedURLException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).collect(Collectors.toList());
+//
+//        List<Notice> linksIgnored = linksProcessed.stream().filter(l -> Objects.isNull(l)).collect(Collectors.toList());
+//        List<Notice> linksSaved = linksProcessed.stream().filter(l -> Objects.nonNull(l)).collect(Collectors.toList());
+//        if (linksSaved.isEmpty()) {
+//            return ResponseEntity.badRequest().body(
+//                    "Nenhum registro salvo"
+//            );
+//        } else {
+//            return ResponseEntity.ok().body(
+//                    String.format("%s registros ignorados. %s salvos com sucesso",linksIgnored.size(),  linksSaved.size())
+//            );
+//        }
+//    }
 
 }
 

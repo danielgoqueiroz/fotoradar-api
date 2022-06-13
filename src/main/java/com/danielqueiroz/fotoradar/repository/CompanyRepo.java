@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CompanyRepo extends JpaRepository<Company, Long> {
 
-    Company findFirstCompanyByWebsite(String site);
+    Company findFirstCompanyByHost(String host);
     Company findFirstCompanyByName(String name);
 
 }

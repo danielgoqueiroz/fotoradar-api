@@ -29,6 +29,16 @@ public class CompanySevice {
         return companyRepo.findAll();
     }
 
+    public Company updateCompany(Company company) {
+        Company companyToUpdate = companyRepo.findFirstCompanyByHost(company.getHost());
+        companyToUpdate.setAddress(company.getAddress());
+        companyToUpdate.setMail(company.getMail());
+        companyToUpdate.setName(company.getName());
+        companyToUpdate.setAddress(company.getAddress());
+        companyToUpdate.setPhone(company.getPhone());
+        return companyToUpdate;
+    }
+
 //    public Notice getnoticeById(Long id) {
 //        return noticeRepo.findNoticeById(id);
 //    }

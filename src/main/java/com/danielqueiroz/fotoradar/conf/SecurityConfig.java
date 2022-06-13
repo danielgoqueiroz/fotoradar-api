@@ -17,8 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -48,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/status/**").permitAll();
         http.authorizeRequests().antMatchers(POST, "/api/image/**", "/api/user/**", "/api/notice/**").authenticated();
         http.authorizeRequests().antMatchers(GET, "/api/image/**", "/api/user/**", "/api/notice/**", "/api/company/**").authenticated();
+        http.authorizeRequests().antMatchers(PUT, "/api/company/**").authenticated();
 //        http.authorizeRequests().antMatchers(GET, "/api/user**", "/api/image/**", "/api/notice/**").hasAnyAuthority("ROLE_USER");
 //        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").permitAll();
         http.authorizeRequests().antMatchers("/api/user/**").authenticated();
