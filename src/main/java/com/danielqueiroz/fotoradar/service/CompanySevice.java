@@ -33,9 +33,11 @@ public class CompanySevice {
         Company companyToUpdate = companyRepo.findFirstCompanyByHost(company.getHost());
         companyToUpdate.setAddress(company.getAddress());
         companyToUpdate.setMail(company.getMail());
+        companyToUpdate.setCnpj(company.getCnpj());
         companyToUpdate.setName(company.getName());
         companyToUpdate.setAddress(company.getAddress());
         companyToUpdate.setPhone(company.getPhone());
+        companyToUpdate.setSuidResponsable(company.getSuidResponsable());
         return companyToUpdate;
     }
 

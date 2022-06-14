@@ -25,6 +25,7 @@ public class Notice {
     private User user;
 
     private String link;
+
     @JsonIgnore
     private String linkHash;
 

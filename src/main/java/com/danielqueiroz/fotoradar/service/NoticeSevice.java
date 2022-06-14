@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 
@@ -32,7 +34,9 @@ public class NoticeSevice {
     private final CompanyRepo companyRepo;
 
     public List<Notice> getLinks() {
-        return noticeRepo.findAll();
+        List<Notice> allNotices = noticeRepo.findAll();
+        List<Notice> collect = allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
+        return allNotices;
     }
 
     public Notice getnoticeById(Long id) {

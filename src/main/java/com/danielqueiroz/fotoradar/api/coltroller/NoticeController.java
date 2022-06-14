@@ -1,19 +1,17 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
-import com.danielqueiroz.fotoradar.exception.NoticeException;
+import com.danielqueiroz.fotoradar.api.model.NoticeRequestDTO;
 import com.danielqueiroz.fotoradar.model.Notice;
 import com.danielqueiroz.fotoradar.service.NoticeSevice;
-import org.springframework.http.MediaType;
+import com.google.common.base.Strings;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
@@ -35,19 +33,21 @@ public class NoticeController {
 
     @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
 //    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> saveUsage(@RequestParam String link, @RequestParam Long imageId) {
+    public ResponseEntity<?> saveUsage(@RequestBody NoticeRequestDTO noticesLinks) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username =  (String) auth.getPrincipal();
+        String username = (String) auth.getPrincipal();
 
-        Notice usageSaved = null;
-        try {
-            usageSaved = noticeService.save(username, link, imageId);
-        } catch (NoticeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (MalformedURLException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        return ResponseEntity.ok(usageSaved);
+        List<Notice> notices = new ArrayList<>();
+        List<String> erros = new ArrayList<>();
+
+        noticesLinks.getLinks().forEach(link -> {
+            try {
+                notices.add(noticeService.save(username, link, noticesLinks.getImage()));
+            } catch (Exception e) {
+                erros.add(e.getMessage());
+            }
+        });
+        return ResponseEntity.ok(notices);
     }
 
     @PostMapping("/add-image-on-notice")
