@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.service;
 
+import com.danielqueiroz.fotoradar.api.model.ImageDTO;
 import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
 import com.danielqueiroz.fotoradar.model.Image;
 import com.danielqueiroz.fotoradar.model.User;
@@ -85,5 +86,9 @@ public class ImageService {
         User user = userService.getUser(username);
 
         return imageRepo.findImagesByUser(user);
+    }
+
+    public void delete(Long id) {
+        imageRepo.deleteById(id);
     }
 }

@@ -78,4 +78,12 @@ public class NoticeSevice {
         Notice notice = getnoticeById(idNotice);
         notice.setImage(image);
     }
+
+    public Notice updateNotice(Notice notice) {
+        Notice noticeToUpdate = noticeRepo.findNoticeById(notice.getId());
+        noticeToUpdate.setCompany(notice.getCompany());
+        noticeToUpdate.setLink(notice.getLink());
+        noticeToUpdate.setProcessNumber(notice.getProcessNumber());
+        return noticeToUpdate;
+    }
 }

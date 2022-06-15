@@ -18,6 +18,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/notice")
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class NoticeController {
 
     private final NoticeSevice noticeService;
@@ -55,6 +56,13 @@ public class NoticeController {
     public ResponseEntity<?> addImageOnUsage(@RequestParam Long idNotice, @RequestParam Long idImage) {
         noticeService.addImageOnNotice(idImage, idNotice);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> updateNotice(@RequestBody Notice notice) {
+        Notice noticeUpdated = noticeService.updateNotice(notice);
+        return ResponseEntity.ok(noticeUpdated);
     }
 
 //    @PostMapping("/links")

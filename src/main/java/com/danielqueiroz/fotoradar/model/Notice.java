@@ -26,6 +26,8 @@ public class Notice {
 
     private String link;
 
+    private String processNumber;
+
     @JsonIgnore
     private String linkHash;
 
