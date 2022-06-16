@@ -28,8 +28,14 @@ public class NoticeController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Notice>> getLinks() {
-        return ok().body(noticeService.getLinks());
+    public ResponseEntity<?> getNotices() {
+        try {
+            List<Notice> notices = noticeService.getLinks();
+            return ok().body(notices);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
     @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)

@@ -32,8 +32,8 @@ public class UserController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok().body(userService.getUsers());
+    public ResponseEntity<User> getUser() {
+        return ResponseEntity.ok().body(userService.getUser());
     }
 
     @PostMapping(value = "", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)

@@ -22,27 +22,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
     private Long id;
-    @JsonIgnore
+
     private String name;
     private String username;
 
     @JsonIgnore
     private String password;
-    @JsonIgnore
+
     private String email;
-    @JsonIgnore
+
     private String cpf;
 
     @JsonIgnore
     @ManyToMany
     private Collection<Role> roles = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany
     @JoinColumn(name = "notice_id")
     private Collection<Notice> notices = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany
     @JoinColumn(name = "image_id")
     private Collection<Image> images = new ArrayList<>();

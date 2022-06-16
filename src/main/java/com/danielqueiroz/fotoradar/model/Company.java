@@ -32,6 +32,9 @@ public class Company {
     private String mail;
 
     @OneToMany
+    private List<Payment> payments;
+
+    @OneToMany
     @JoinColumn(name = "company_id")
     private Collection<Notice> notices =  new ArrayList<>();
 

@@ -5,8 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.util.List;
+
+import static org.hibernate.annotations.NotFoundAction.IGNORE;
 
 @Data
 @Entity
@@ -32,9 +37,14 @@ public class Notice {
     private String linkHash;
 
     @ManyToOne
+    @NotFound(action = IGNORE)
     private Image image;
 
     @ManyToOne
     private Company company;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "notice")
+    private List<Payment> payments = new java.util.ArrayList<>();
+
 
 }

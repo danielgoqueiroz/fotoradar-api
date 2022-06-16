@@ -9,7 +9,9 @@ import com.danielqueiroz.fotoradar.model.User;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -107,5 +109,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setEmail(userToUpdate.getEmail());
         user.setPassword(userToUpdate.getPassword());
         saveUser(user);
+    }
+
+    public User getUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        return userRepo.findByUsername(username);
     }
 }
