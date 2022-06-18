@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,6 @@ public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "company_id")
     private Long id;
 
     private String name;
@@ -32,9 +32,11 @@ public class Company {
     private String mail;
 
     @OneToMany
+    @JoinColumn(name = "company_id")
     private List<Payment> payments;
 
     @OneToMany
+    @JsonBackReference
     @JoinColumn(name = "company_id")
     private Collection<Notice> notices =  new ArrayList<>();
 

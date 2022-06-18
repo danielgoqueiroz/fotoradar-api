@@ -9,4 +9,6 @@ public interface NoticeRepo extends JpaRepository<Notice, Long> {
     Notice findFirstByLinkHash(String hash);
     Notice findNoticeById(Long id);
     List<Notice> findAll();
+
+    List<Notice> findNoticeByUserId(Long userId);
 }

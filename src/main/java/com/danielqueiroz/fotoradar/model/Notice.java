@@ -1,6 +1,7 @@
 package com.danielqueiroz.fotoradar.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,8 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hibernate.annotations.NotFoundAction.IGNORE;
@@ -23,7 +26,6 @@ public class Notice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "notice_id")
     private Long id;
 
     @ManyToOne
@@ -41,10 +43,12 @@ public class Notice {
     private Image image;
 
     @ManyToOne
+    @JsonManagedReference
     private Company company;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "notice")
-    private List<Payment> payments = new java.util.ArrayList<>();
+    @JsonManagedReference
+    private Collection<Payment> payments = new ArrayList<>();
 
 
 }

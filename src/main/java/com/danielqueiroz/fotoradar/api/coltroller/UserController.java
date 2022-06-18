@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.http.MediaType.*;
@@ -36,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUser());
     }
 
-    @PostMapping(value = "", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/save", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveUser(@RequestBody UserDTO user) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/save").toUriString());
         try {
@@ -46,6 +47,7 @@ public class UserController {
                                     .builder()
                                     .username(user.getUsername())
                                     .password(user.getPassword())
+                                    .roles(Collections.singleton(Role.builder().name("USER").build()))
                                     .name(user.getName())
                                     .cpf(user.getCpf())
                                     .email(user.getEmail())

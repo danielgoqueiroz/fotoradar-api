@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User saveUser(User user) throws AlreadyExistException, ValidationException {
         validateUser(user);
+
+        Collection<Role> roles = user.getRoles();
+        roles.forEach(r -> {
+            Role role = roleRepo.findByName(r.getName());
+            if (role == null) {
+                roleRepo.save(r);
+            }
+        });
+        List<Role> rolesOnDatabase = roles.stream().map(r -> roleRepo.findByName(r.getName())).collect(Collectors.toList());
+        user.setRoles(rolesOnDatabase);
 
         log.info("Salvando usuário {}", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));

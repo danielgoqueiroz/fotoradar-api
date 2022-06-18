@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Data
 @Entity
@@ -21,7 +20,6 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "image_id")
     private Long id;
     private String name;
     private String description;
@@ -30,7 +28,8 @@ public class Image {
     private User user;
     private String link;
 
-    @Column(name= "blob_column", length=100000)
+    @JsonIgnore
+    @Column(name = "blob_column", length = 100000)
     private String blob;
 
     @JsonIgnore

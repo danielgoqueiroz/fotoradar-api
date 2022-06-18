@@ -3,13 +3,13 @@ package com.danielqueiroz.fotoradar.api.coltroller;
 import com.danielqueiroz.fotoradar.api.model.NoticeRequestDTO;
 import com.danielqueiroz.fotoradar.model.Notice;
 import com.danielqueiroz.fotoradar.service.NoticeSevice;
-import com.google.common.base.Strings;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +29,9 @@ public class NoticeController {
 
     @GetMapping("")
     public ResponseEntity<?> getNotices() {
+
         try {
-            List<Notice> notices = noticeService.getLinks();
+            List<Notice> notices = noticeService.getNotices();
             return ok().body(notices);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -39,7 +40,6 @@ public class NoticeController {
     }
 
     @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
-//    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveUsage(@RequestBody NoticeRequestDTO noticesLinks) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
@@ -49,7 +49,7 @@ public class NoticeController {
 
         noticesLinks.getLinks().forEach(link -> {
             try {
-                notices.add(noticeService.save(username, link, noticesLinks.getImage()));
+                notices.add(noticeService.save(username, link, noticesLinks.getImageId()));
             } catch (Exception e) {
                 erros.add(e.getMessage());
             }
@@ -64,11 +64,19 @@ public class NoticeController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("")
+    @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateNotice(@RequestBody Notice notice) {
         Notice noticeUpdated = noticeService.updateNotice(notice);
         return ResponseEntity.ok(noticeUpdated);
+    }
+
+    @PostMapping("add-payment")
+    public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {
+
+        BigDecimal valueDecimal = BigDecimal.valueOf(Long.valueOf(value));
+        noticeService.addPayment(Long.valueOf(idNotice), valueDecimal);
+        return ResponseEntity.ok().build();
     }
 
 //    @PostMapping("/links")

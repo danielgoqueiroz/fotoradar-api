@@ -1,24 +1,24 @@
 package com.danielqueiroz.fotoradar.service;
 
 import com.danielqueiroz.fotoradar.exception.NoticeException;
-import com.danielqueiroz.fotoradar.model.Company;
-import com.danielqueiroz.fotoradar.model.Image;
-import com.danielqueiroz.fotoradar.model.Notice;
-import com.danielqueiroz.fotoradar.model.User;
-import com.danielqueiroz.fotoradar.repository.CompanyRepo;
-import com.danielqueiroz.fotoradar.repository.ImageRepo;
-import com.danielqueiroz.fotoradar.repository.NoticeRepo;
-import com.danielqueiroz.fotoradar.repository.UserRepo;
+import com.danielqueiroz.fotoradar.model.*;
+import com.danielqueiroz.fotoradar.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 
@@ -30,13 +30,19 @@ public class NoticeSevice {
 
     private final ImageRepo imageRepo;
     private final NoticeRepo noticeRepo;
+    private final PaymentRepo paymentRepo;
     private final UserRepo userRepo;
     private final CompanyRepo companyRepo;
 
-    public List<Notice> getLinks() {
-        List<Notice> allNotices = noticeRepo.findAll();
-        List<Notice> collect = allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
-        return allNotices;
+    public List<Notice> getNotices() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userRepo.findByUsername(username);
+
+        List<Notice> allNotices = noticeRepo.findNoticeByUserId(user.getId());
+        allNotices.forEach(n -> n.setPayments(paymentRepo.findAllByNoticeId(n.getId())));
+        return allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
     }
 
     public Notice getnoticeById(Long id) {
@@ -85,5 +91,18 @@ public class NoticeSevice {
         noticeToUpdate.setLink(notice.getLink());
         noticeToUpdate.setProcessNumber(notice.getProcessNumber());
         return noticeToUpdate;
+    }
+
+    public void addPayment(Long noticeId, BigDecimal value) {
+        Notice notice = noticeRepo.findNoticeById(noticeId);
+        Payment payment = Payment.builder()
+                .date(new Date())
+                .value(value)
+                .notice(notice)
+//                .company(notice.getCompany())
+//                .user(notice.getUser())
+                .build();
+        paymentRepo.save(payment);
+
     }
 }

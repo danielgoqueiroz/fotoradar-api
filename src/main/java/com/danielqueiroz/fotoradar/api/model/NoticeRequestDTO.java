@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 public class NoticeRequestDTO {
 
-    private Long image;
+    private Long imageId;
     private List<String> links;
 }
