@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.service;
 
+import com.danielqueiroz.fotoradar.api.model.CompanyDTO;
 import com.danielqueiroz.fotoradar.exception.NoticeException;
 import com.danielqueiroz.fotoradar.model.Company;
 import com.danielqueiroz.fotoradar.model.Image;
@@ -26,10 +27,11 @@ public class CompanySevice {
     }
 
     public List<Company> findCompanies() {
-        return companyRepo.findAll();
+        List<Company> companies = companyRepo.findAll();
+        return companies;
     }
 
-    public Company updateCompany(Company company) {
+    public Company updateCompany(CompanyDTO company) {
         Company companyToUpdate = companyRepo.findFirstCompanyByHost(company.getHost());
         companyToUpdate.setAddress(company.getAddress());
         companyToUpdate.setMail(company.getMail());

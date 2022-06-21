@@ -54,20 +54,29 @@ public class NoticeController {
                 erros.add(e.getMessage());
             }
         });
-        return ResponseEntity.ok(notices);
+        if (erros.isEmpty()) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().body(erros);
+        }
+
     }
 
     @PostMapping("/add-image-on-notice")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> addImageOnUsage(@RequestParam Long idNotice, @RequestParam Long idImage) {
         noticeService.addImageOnNotice(idImage, idNotice);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateNotice(@RequestBody Notice notice) {
         Notice noticeUpdated = noticeService.updateNotice(notice);
+        return ResponseEntity.ok(noticeUpdated);
+    }
+
+    @PutMapping(value = "process", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateNoticeProcess(@RequestParam String noticeId, @RequestParam String processNumber) {
+        Notice noticeUpdated = noticeService.updateNoticeProcess(Long.valueOf(noticeId), processNumber);
         return ResponseEntity.ok(noticeUpdated);
     }
 

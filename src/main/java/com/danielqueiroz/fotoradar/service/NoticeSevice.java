@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 
@@ -38,9 +37,9 @@ public class NoticeSevice {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
-        User user = userRepo.findByUsername(username);
+        User user = userRepo.findUserByUsername(username);
 
-        List<Notice> allNotices = noticeRepo.findNoticeByUserId(user.getId());
+        Collection<Notice> allNotices = noticeRepo.findNoticeByUserId(user.getId());
         allNotices.forEach(n -> n.setPayments(paymentRepo.findAllByNoticeId(n.getId())));
         return allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
     }
@@ -64,7 +63,7 @@ public class NoticeSevice {
                     .build();
             companyRepo.save(company);
         }
-        User user = userRepo.findByUsername(username);
+        User user = userRepo.findUserByUsername(username);
         Image image = imageRepo.getById(imageId);
 
         Notice notice = Notice.builder()
@@ -92,6 +91,14 @@ public class NoticeSevice {
         noticeToUpdate.setProcessNumber(notice.getProcessNumber());
         return noticeToUpdate;
     }
+
+    public Notice updateNoticeProcess(Long noticeId, String process) {
+        Notice noticeToUpdate = noticeRepo.findNoticeById(noticeId);
+        noticeToUpdate.setProcessNumber(process);
+        return noticeToUpdate;
+    }
+
+
 
     public void addPayment(Long noticeId, BigDecimal value) {
         Notice notice = noticeRepo.findNoticeById(noticeId);

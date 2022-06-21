@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
+import com.danielqueiroz.fotoradar.api.model.CompanyDTO;
 import com.danielqueiroz.fotoradar.exception.NoticeException;
 import com.danielqueiroz.fotoradar.model.Company;
 import com.danielqueiroz.fotoradar.model.Notice;
@@ -33,7 +34,7 @@ public class CompanyController {
     }
 
     @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
+    public ResponseEntity<Company> updateCompany(@RequestBody CompanyDTO company) {
         return ok().body(companySevice.updateCompany(company));
     }
 

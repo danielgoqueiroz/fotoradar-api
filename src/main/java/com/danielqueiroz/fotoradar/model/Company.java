@@ -1,6 +1,7 @@
 package com.danielqueiroz.fotoradar.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,13 +32,15 @@ public class Company {
     private String host;
     private String mail;
 
-    @OneToMany
-    @JoinColumn(name = "company_id")
-    private List<Payment> payments;
 
     @OneToMany
     @JsonBackReference
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "notice_id")
     private Collection<Notice> notices =  new ArrayList<>();
+
+    @OneToMany
+    @JsonBackReference
+    @JoinColumn(name = "payment_id")
+    private Collection<Payment> payments = new ArrayList<>();;
 
 }

@@ -12,6 +12,8 @@ import com.danielqueiroz.fotoradar.service.UserServiceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -62,12 +64,14 @@ public class UserController {
 
     @PutMapping (value = "", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUser(@RequestBody UserDTO user) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
 
         try {
             userService.updateUser(
                     User
                             .builder()
-                            .username(user.getUsername())
+                            .username(username)
                             .password(user.getPassword())
                             .name(user.getName())
                             .cpf(user.getCpf())

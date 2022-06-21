@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void addRoleToUser(String username, String roleName) {
         log.info("Adicionando regra {} no usuário {}", roleName, username);
-        User user = userRepo.findByUsername(username);
+        User user = userRepo.findUserByUsername(username);
         Role role = roleRepo.findByName(roleName);
         user.getRoles().add(role);
     }
@@ -87,7 +87,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getUser(String username) {
         log.info("Buscando usuário {}", username );
-        return userRepo.findByUsername(username);
+        User user = userRepo.findUserByUsername(username);
+        return user;
     }
 
     @Override
@@ -113,18 +114,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUser(User userToUpdate) throws ValidationException, AlreadyExistException {
-        User user = userRepo.findByUsername(userToUpdate.getUsername());
+        User user = userRepo.findUserByUsername(userToUpdate.getUsername());
         user.setUsername(userToUpdate.getUsername());
         user.setCpf(userToUpdate.getCpf());
         user.setName(userToUpdate.getName());
         user.setEmail(userToUpdate.getEmail());
-        user.setPassword(userToUpdate.getPassword());
-        saveUser(user);
     }
 
     public User getUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
-        return userRepo.findByUsername(username);
+        return userRepo.findUserByUsername(username);
     }
 }
