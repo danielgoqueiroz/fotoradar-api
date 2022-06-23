@@ -1,34 +1,63 @@
+# FotoRadar
+## Sobre
+FotoRadar é um sistema para gerenciamento de uso de imagens e acompanhamento de cobrnaça pelo uso. 
+Também, foi minha primeira ideia de projeto de desenvolvimento e que me inspirou a querer aprender a programar, quando ainda era reporter fotográfico.
+Ele já passou por alguns reconstruções e modificações, que acompanham a minha própria evolução como programador.
 
-TODO
-## Imagem
+## Funcionalidades
+
+### Imagem
 [x]-Cadastrar
-## Notice
-[ ] - Dado uma imagem cadastrar notice
-[ ] - Quando cadastrar Notificação vincular Compania caso já exista ou cadastrar nova compania e vincular a Notificação caso não exista
-## Company
-Editar compania que existe
+[x]-Visualizar várias
+[x]-Editar
+[x]-Remover
 
-Rest
-https://spring.io/guides/tutorials/rest/
+### Notificação
+[x]-Cadastrar informando imagem e link do uso 
+    [x]-Cadastra empresa, caso não tenha sido cadastrada ainda
+[x]-Visualizar várias
+[x]-Editar
+    [x]-Adicionar imagem
+[x]-Remover
 
-Security
-https://www.youtube.com/watch?v=VVn9OG9nfH0
+### Pagamento
+[x]-Adicionar
+[x]-Visualizar extrato: valores e total
+[ ]-Remover pagamento
+[ ]-Editar pagamento
 
-#Get start DEV
+### Empresa
+[x]-Cadastrar (Via cadastro de notificação)
+[x]-Visualizar várias
+[x]-Editar
+[x]-Remover
 
-Abrir app Docker (Windows)
 
-Rodar docker:
+#GetStart em DEV
+
+Com docker (https://www.docker.com/)(Windows)
+Rodar
+```
 docker run --name mysql-fotoradar -e MYSQL_ROOT_PASSWORD=pass -p 3306:3306 -d docker.io/library/mariadb:10.3
 Ver nome de imagem com:
 docker ps
+```
 
-Executar na imagem:
+Abrir cmd(Windows) e rodar o comando abaixo para configurar o banco local: 
+```
 docker exec -it 'docker-name'  mysql -uroot -p;
 CREATE USER 'root'@'172.0.0.1' IDENTIFIED BY 'root';
 CREATE USER 'test'@'172.17.0.1' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'test'@'172.17.0.1' WITH GRANT OPTION;
 flush privileges;
 exit;
-
+```
+Criar o banco de dados
+```
 create database danie648_fotoradar_dev;
+```
+
+test
+127.0.0.1
+password
+
