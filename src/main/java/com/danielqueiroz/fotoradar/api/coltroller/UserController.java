@@ -9,6 +9,7 @@ import com.danielqueiroz.fotoradar.model.RoleToUserForm;
 import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.service.UserService;
 import com.danielqueiroz.fotoradar.service.UserServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
