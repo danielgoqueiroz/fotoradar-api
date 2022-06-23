@@ -33,7 +33,7 @@ Ele já passou por alguns reconstruções e modificações, que acompanham a min
 [x]-Remover
 
 
-#GetStart em DEV
+# GetStart em DEV
 
 Com docker (https://www.docker.com/)(Windows)
 Rodar
