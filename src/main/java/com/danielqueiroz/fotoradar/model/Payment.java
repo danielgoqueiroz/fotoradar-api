@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
@@ -30,8 +27,8 @@ public class Payment {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "notice_id")
-    private Notice notice;
+    @JoinColumn(name = "page_id")
+    private Page page;
 
     @ManyToOne
     @JsonManagedReference

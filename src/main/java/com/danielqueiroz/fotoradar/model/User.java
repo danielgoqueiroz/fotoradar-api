@@ -1,6 +1,7 @@
 package com.danielqueiroz.fotoradar.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,27 +23,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
     private Long id;
-
     private String name;
     private String username;
-
     @JsonIgnore
     private String password;
-
     private String email;
-
     private String cpf;
 
     @JsonIgnore
     @ManyToMany
-    private Collection<Role> roles = new ArrayList<>();
+    private Collection<Role> roles;
 
-    @OneToMany
-    @JoinColumn(name = "notice_id")
-    private Collection<Notice> notices = new ArrayList<>();
-
-    @OneToMany
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
-    private Collection<Image> images = new ArrayList<>();
+    private Collection<Image> images;
 
 }

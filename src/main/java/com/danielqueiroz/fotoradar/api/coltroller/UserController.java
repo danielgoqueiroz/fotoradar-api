@@ -5,22 +5,18 @@ import com.danielqueiroz.fotoradar.api.model.UserDTO;
 import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
 import com.danielqueiroz.fotoradar.exception.ValidationException;
 import com.danielqueiroz.fotoradar.model.Role;
-import com.danielqueiroz.fotoradar.model.RoleToUserForm;
+import com.danielqueiroz.fotoradar.api.model.RoleToUserFormDTO;
 import com.danielqueiroz.fotoradar.model.User;
-import com.danielqueiroz.fotoradar.service.UserService;
 import com.danielqueiroz.fotoradar.service.UserServiceImpl;
-import lombok.AllArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.List;
 
 import static org.springframework.http.MediaType.*;
 
@@ -94,7 +90,7 @@ public class UserController {
     }
 
     @PostMapping("/role/add-on-user")
-    public ResponseEntity addToUser(@RequestBody RoleToUserForm roleToUserForm) {
+    public ResponseEntity addToUser(@RequestBody RoleToUserFormDTO roleToUserForm) {
         userService.addRoleToUser(roleToUserForm.getUsername(), roleToUserForm.getRole());
         return ResponseEntity.ok().build();
     }

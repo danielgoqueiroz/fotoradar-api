@@ -1,22 +1,14 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
 import com.danielqueiroz.fotoradar.api.model.CompanyDTO;
-import com.danielqueiroz.fotoradar.exception.NoticeException;
 import com.danielqueiroz.fotoradar.model.Company;
-import com.danielqueiroz.fotoradar.model.Notice;
 import com.danielqueiroz.fotoradar.service.CompanySevice;
-import com.danielqueiroz.fotoradar.service.NoticeSevice;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PaymentRepo extends JpaRepository<Payment, Long> {
 
-    List<Payment> findAllByNoticeId(Long noticeId);
+    List<Payment> findAllByPageId(Long noticeId);
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NoticeRequestDTO {
+public class PageDTO {
 
     private Long imageId;
     private List<String> links;

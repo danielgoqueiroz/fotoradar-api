@@ -7,12 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import static org.hibernate.annotations.NotFoundAction.IGNORE;
 
@@ -22,33 +20,24 @@ import static org.hibernate.annotations.NotFoundAction.IGNORE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Notice {
+public class Page {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    private User user;
-
-    private String link;
-
-    private String processNumber;
-
-    @JsonIgnore
-    private String linkHash;
+    private String url;
 
     @ManyToOne
-    @NotFound(action = IGNORE)
+    @JsonManagedReference
     private Image image;
 
     @ManyToOne
     @JsonManagedReference
     private Company company;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "notice")
+    @ManyToOne
     @JsonManagedReference
-    private Collection<Payment> payments = new ArrayList<>();
-
+    private Process process;
 
 }

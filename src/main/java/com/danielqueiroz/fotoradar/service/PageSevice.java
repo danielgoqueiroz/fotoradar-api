@@ -2,6 +2,7 @@ package com.danielqueiroz.fotoradar.service;
 
 import com.danielqueiroz.fotoradar.exception.NoticeException;
 import com.danielqueiroz.fotoradar.model.*;
+import com.danielqueiroz.fotoradar.model.Process;
 import com.danielqueiroz.fotoradar.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,35 +26,31 @@ import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class NoticeSevice {
+public class PageSevice {
 
     private final ImageRepo imageRepo;
     private final NoticeRepo noticeRepo;
     private final PaymentRepo paymentRepo;
     private final UserRepo userRepo;
+    private final ProcessRepo processRepo;
     private final CompanyRepo companyRepo;
 
-    public List<Notice> getNotices() {
+    public List<Page> getPages() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
         User user = userRepo.findUserByUsername(username);
 
-        Collection<Notice> allNotices = noticeRepo.findNoticeByUserId(user.getId());
-        allNotices.forEach(n -> n.setPayments(paymentRepo.findAllByNoticeId(n.getId())));
+        Collection<Page> allNotices = noticeRepo.findAll();
         return allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
     }
 
-    public Notice getnoticeById(Long id) {
+    public Page getPageById(Long id) {
         return noticeRepo.findNoticeById(id);
     }
 
-    public Notice save(String username, String url, Long imageId) throws NoticeException, MalformedURLException {
+    public Page save(String username, String url, Long imageId) throws NoticeException, MalformedURLException {
         String hash = getHash(url);
-        Notice noticeOnDatabase = noticeRepo.findFirstByLinkHash(hash);
-        if(noticeOnDatabase != null) {
-           return null;
-        }
 
         String host = new URL(url).getHost();
         Company company = companyRepo.findFirstCompanyByHost(host);
@@ -66,46 +63,54 @@ public class NoticeSevice {
         User user = userRepo.findUserByUsername(username);
         Image image = imageRepo.getById(imageId);
 
-        Notice notice = Notice.builder()
-                .user(user)
-                .link(url)
+        Page page = Page.builder()
+                .url(url)
                 .image(image)
-                .linkHash(hash)
                 .company(company)
                 .build();
 
-        Notice noticeSaved = noticeRepo.save(notice);
-        return noticeSaved;
+        Page pageSaved = noticeRepo.save(page);
+        return pageSaved;
     }
 
-    public void addImageOnNotice(Long idImage, Long idNotice) {
+    public void addImageOnPage(Long idImage, Long idNotice) {
         Image image = imageRepo.getById(idImage);
-        Notice notice = getnoticeById(idNotice);
-        notice.setImage(image);
+        Page page = getPageById(idNotice);
+        page.setImage(image);
     }
 
-    public Notice updateNotice(Notice notice) {
-        Notice noticeToUpdate = noticeRepo.findNoticeById(notice.getId());
-        noticeToUpdate.setCompany(notice.getCompany());
-        noticeToUpdate.setLink(notice.getLink());
-        noticeToUpdate.setProcessNumber(notice.getProcessNumber());
-        return noticeToUpdate;
+    public Page updatePage(Page page) {
+        Page pageToUpdate = noticeRepo.findNoticeById(page.getId());
+        pageToUpdate.setCompany(page.getCompany());
+        pageToUpdate.setUrl(page.getUrl());
+//        noticeToUpdate.setProcessNumber(notice.getProcessNumber());
+        return pageToUpdate;
     }
 
-    public Notice updateNoticeProcess(Long noticeId, String process) {
-        Notice noticeToUpdate = noticeRepo.findNoticeById(noticeId);
-        noticeToUpdate.setProcessNumber(process);
-        return noticeToUpdate;
+    public Page updatePageProcess(Long noticeId, String processNumber) {
+        Page pageToUpdate = noticeRepo.findNoticeById(noticeId);
+        if(pageToUpdate.getProcess() == null) {
+            Process process = Process.builder()
+                    .processNumber(processNumber).build();
+            Process processByProcessNumber = processRepo.findProcessByProcessNumber(processNumber);
+            if (processByProcessNumber == null) {
+                Process processSaved = processRepo.save(process);
+                pageToUpdate.setProcess(processSaved);
+            }
+
+        };
+
+        return pageToUpdate;
     }
 
 
 
     public void addPayment(Long noticeId, BigDecimal value) {
-        Notice notice = noticeRepo.findNoticeById(noticeId);
+        Page page = noticeRepo.findNoticeById(noticeId);
         Payment payment = Payment.builder()
                 .date(new Date())
                 .value(value)
-                .notice(notice)
+                .page(page)
 //                .company(notice.getCompany())
 //                .user(notice.getUser())
                 .build();

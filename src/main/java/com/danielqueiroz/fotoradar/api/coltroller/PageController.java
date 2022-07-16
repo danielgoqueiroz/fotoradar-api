@@ -1,10 +1,9 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
-import com.danielqueiroz.fotoradar.api.model.NoticeRequestDTO;
-import com.danielqueiroz.fotoradar.model.Notice;
-import com.danielqueiroz.fotoradar.service.NoticeSevice;
+import com.danielqueiroz.fotoradar.api.model.PageDTO;
+import com.danielqueiroz.fotoradar.model.Page;
+import com.danielqueiroz.fotoradar.service.PageSevice;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +16,22 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/api/notice")
+@RequestMapping("/api/page")
 @CrossOrigin(origins = {"http://localhost:3000"})
-public class NoticeController {
+public class PageController {
 
-    private final NoticeSevice noticeService;
+    private final PageSevice pageService;
 
-    public NoticeController(NoticeSevice noticeService) {
-        this.noticeService = noticeService;
+    public PageController(PageSevice pageService) {
+        this.pageService = pageService;
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getNotices() {
+    public ResponseEntity<?> getPages() {
 
         try {
-            List<Notice> notices = noticeService.getNotices();
-            return ok().body(notices);
+            List<Page> pages = pageService.getPages();
+            return ok().body(pages);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -40,16 +39,16 @@ public class NoticeController {
     }
 
     @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveUsage(@RequestBody NoticeRequestDTO noticesLinks) {
+    public ResponseEntity<?> saveUsage(@RequestBody PageDTO pagessLinks) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
 
-        List<Notice> notices = new ArrayList<>();
+        List<Page> pages = new ArrayList<>();
         List<String> erros = new ArrayList<>();
 
-        noticesLinks.getLinks().forEach(link -> {
+        pagessLinks.getLinks().forEach(link -> {
             try {
-                notices.add(noticeService.save(username, link, noticesLinks.getImageId()));
+                pages.add(pageService.save(username, link, pagessLinks.getImageId()));
             } catch (Exception e) {
                 erros.add(e.getMessage());
             }
@@ -63,28 +62,28 @@ public class NoticeController {
     }
 
     @PostMapping("/add-image-on-notice")
-    public ResponseEntity<?> addImageOnUsage(@RequestParam Long idNotice, @RequestParam Long idImage) {
-        noticeService.addImageOnNotice(idImage, idNotice);
+    public ResponseEntity<?> addImageOnUsage(@RequestParam Long idPage, @RequestParam Long idImage) {
+        pageService.addImageOnPage(idImage, idPage);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateNotice(@RequestBody Notice notice) {
-        Notice noticeUpdated = noticeService.updateNotice(notice);
-        return ResponseEntity.ok(noticeUpdated);
+    public ResponseEntity<?> updateNotice(@RequestBody Page page) {
+        Page pageUpdated = pageService.updatePage(page);
+        return ResponseEntity.ok(pageUpdated);
     }
 
     @PutMapping(value = "process", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateNoticeProcess(@RequestParam String noticeId, @RequestParam String processNumber) {
-        Notice noticeUpdated = noticeService.updateNoticeProcess(Long.valueOf(noticeId), processNumber);
-        return ResponseEntity.ok(noticeUpdated);
+    public ResponseEntity<?> updatePageProcess(@RequestParam String noticeId, @RequestParam String processNumber) {
+        Page pageUpdated = pageService.updatePageProcess(Long.valueOf(noticeId), processNumber);
+        return ResponseEntity.ok(pageUpdated);
     }
 
     @PostMapping("add-payment")
     public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {
 
         BigDecimal valueDecimal = BigDecimal.valueOf(Long.valueOf(value));
-        noticeService.addPayment(Long.valueOf(idNotice), valueDecimal);
+        pageService.addPayment(Long.valueOf(idNotice), valueDecimal);
         return ResponseEntity.ok().build();
     }
 

@@ -8,8 +8,8 @@ import com.danielqueiroz.fotoradar.model.Role;
 import com.danielqueiroz.fotoradar.model.User;
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,15 +36,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User saveUser(User user) throws AlreadyExistException, ValidationException {
         validateUser(user);
-
+        User userOnDb = userRepo.findUserByUsername(user.getUsername());
+        if (!Objects.isNull(userOnDb)) {
+            throw new AlreadyExistException("User exists");
+        }
         Collection<Role> roles = user.getRoles();
         roles.forEach(r -> {
-            Role role = roleRepo.findByName(r.getName());
+            Role role = roleRepo.findRoleByName(r.getName());
             if (role == null) {
                 roleRepo.save(r);
             }
         });
-        List<Role> rolesOnDatabase = roles.stream().map(r -> roleRepo.findByName(r.getName())).collect(Collectors.toList());
+        List<Role> rolesOnDatabase = roles.stream().map(r -> roleRepo.findRoleByName(r.getName())).collect(Collectors.toList());
         user.setRoles(rolesOnDatabase);
 
         log.info("Salvando usuário {}", user.getUsername());
@@ -69,7 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Role saveRole(Role role) {
-        Role roleOnDatabase = roleRepo.findByName(role.getName());
+        Role roleOnDatabase = roleRepo.findRoleByName(role.getName());
         if (roleOnDatabase != null) {
             return roleOnDatabase;
         }
@@ -81,7 +84,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void addRoleToUser(String username, String roleName) {
         log.info("Adicionando regra {} no usuário {}", roleName, username);
         User user = userRepo.findUserByUsername(username);
-        Role role = roleRepo.findByName(roleName);
+        Role role = roleRepo.findRoleByName(roleName);
         user.getRoles().add(role);
     }
 

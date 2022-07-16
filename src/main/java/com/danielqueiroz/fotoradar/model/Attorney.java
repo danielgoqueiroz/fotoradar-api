@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,36 +8,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 @Data
 @Entity
+@Table(name = "attorney")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "image")
-public class Image {
+public class Attorney {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Long id;
-    private String name;
-    private String description;
-    private Date date;
-    private String link;
 
-    @ManyToOne
+    @OneToOne
     private User user;
 
-    @JsonIgnore
-    @Column(name = "blob_column", length = 100000)
-    private String blob;
+    private String oabNumber;
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "page_id")
-    private Collection<Page> pages;
+    @OneToMany
+    private Collection<Process> processes;
 
 }

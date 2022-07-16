@@ -1,19 +1,13 @@
 package com.danielqueiroz.fotoradar.service;
 
 import com.danielqueiroz.fotoradar.api.model.CompanyDTO;
-import com.danielqueiroz.fotoradar.exception.NoticeException;
 import com.danielqueiroz.fotoradar.model.Company;
-import com.danielqueiroz.fotoradar.model.Image;
-import com.danielqueiroz.fotoradar.model.Notice;
-import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.repository.CompanyRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 
 @Transactional
 @Slf4j

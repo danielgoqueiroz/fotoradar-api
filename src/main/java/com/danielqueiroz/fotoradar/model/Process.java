@@ -1,42 +1,36 @@
 package com.danielqueiroz.fotoradar.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
+@Table(name = "process")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "image")
-public class Image {
+public class Process {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
-    private String description;
-    private Date date;
-    private String link;
 
-    @ManyToOne
-    private User user;
+    private String processNumber;
+    private Date processDate;
 
-    @JsonIgnore
-    @Column(name = "blob_column", length = 100000)
-    private String blob;
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @JoinColumn(name = "page_id")
     private Collection<Page> pages;
+
+    @OneToOne
+    @JoinColumn(name = "attorney_id")
+    private Attorney attorney;
 
 }
