@@ -1,42 +1,32 @@
 package com.danielqueiroz.fotoradar.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NotFound;
+import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static org.hibernate.annotations.NotFoundAction.IGNORE;
-
-@Data
-@Entity
-@Table(name = "notice")
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document
 public class Page {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
 
     private String url;
 
-    @ManyToOne
+//    @ManyToOne
     @JsonManagedReference
     private Image image;
 
-    @ManyToOne
+//    @ManyToOne
     @JsonManagedReference
     private Company company;
 
-    @ManyToOne
+//    @ManyToOne
     @JsonManagedReference
     private Process process;
 

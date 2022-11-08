@@ -2,27 +2,23 @@ package com.danielqueiroz.fotoradar.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 
-@Data
-@Entity
-@Table(name = "user")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document
+@Setter
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
-    private Long id;
+    private String id;
     private String name;
     private String username;
     @JsonIgnore
@@ -31,12 +27,12 @@ public class User {
     private String cpf;
 
     @JsonIgnore
-    @ManyToMany
+//    @ManyToMany
     private Collection<Role> roles;
 
     @JsonManagedReference
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
+//    @OneToMany(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "image_id")
     private Collection<Image> images;
 
 }

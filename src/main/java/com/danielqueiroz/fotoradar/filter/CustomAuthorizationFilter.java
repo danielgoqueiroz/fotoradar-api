@@ -36,6 +36,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if (requestservletPath.equals("/api/dev")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (requestservletPath.equals("/api/login")) {
             filterChain.doFilter(request, response);
         } else {

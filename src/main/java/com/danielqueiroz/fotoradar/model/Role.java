@@ -1,25 +1,21 @@
 package com.danielqueiroz.fotoradar.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-
-@Data
-@Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "role")
+@Document
+@Setter
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
-    private Long id;
+    private String id;
     private String name;
 
 }

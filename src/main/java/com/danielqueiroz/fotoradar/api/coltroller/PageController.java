@@ -62,7 +62,7 @@ public class PageController {
     }
 
     @PostMapping("/add-image-on-notice")
-    public ResponseEntity<?> addImageOnUsage(@RequestParam Long idPage, @RequestParam Long idImage) {
+    public ResponseEntity<?> addImageOnUsage(@RequestParam String idPage, @RequestParam String idImage) {
         pageService.addImageOnPage(idImage, idPage);
         return ResponseEntity.ok().build();
     }
@@ -75,7 +75,7 @@ public class PageController {
 
     @PutMapping(value = "process", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updatePageProcess(@RequestParam String noticeId, @RequestParam String processNumber) {
-        Page pageUpdated = pageService.updatePageProcess(Long.valueOf(noticeId), processNumber);
+        Page pageUpdated = pageService.updatePageProcess(noticeId, processNumber);
         return ResponseEntity.ok(pageUpdated);
     }
 
@@ -83,7 +83,7 @@ public class PageController {
     public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {
 
         BigDecimal valueDecimal = BigDecimal.valueOf(Long.valueOf(value));
-        pageService.addPayment(Long.valueOf(idNotice), valueDecimal);
+        pageService.addPayment(idNotice, valueDecimal);
         return ResponseEntity.ok().build();
     }
 

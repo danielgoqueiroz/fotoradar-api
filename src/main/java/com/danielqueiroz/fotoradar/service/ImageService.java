@@ -88,7 +88,7 @@ public class ImageService {
         return imageRepo.findImagesByUser(user);
     }
 
-    public void delete(Long id) {
+    public void delete(String id) {
         imageRepo.deleteById(id);
     }
 }

@@ -1,14 +1,14 @@
 package com.danielqueiroz.fotoradar.api.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
+//@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document("user")
+@Getter
 public class UserDTO {
 
     private String name;

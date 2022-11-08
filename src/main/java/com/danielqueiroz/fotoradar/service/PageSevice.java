@@ -45,11 +45,11 @@ public class PageSevice {
         return allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
     }
 
-    public Page getPageById(Long id) {
+    public Page getPageById(String id) {
         return noticeRepo.findNoticeById(id);
     }
 
-    public Page save(String username, String url, Long imageId) throws NoticeException, MalformedURLException {
+    public Page save(String username, String url, String imageId) throws NoticeException, MalformedURLException {
         String hash = getHash(url);
 
         String host = new URL(url).getHost();
@@ -61,7 +61,7 @@ public class PageSevice {
             companyRepo.save(company);
         }
         User user = userRepo.findUserByUsername(username);
-        Image image = imageRepo.getById(imageId);
+        Image image = imageRepo.findImageById(imageId);
 
         Page page = Page.builder()
                 .url(url)
@@ -73,8 +73,8 @@ public class PageSevice {
         return pageSaved;
     }
 
-    public void addImageOnPage(Long idImage, Long idNotice) {
-        Image image = imageRepo.getById(idImage);
+    public void addImageOnPage(String idImage, String idNotice) {
+        Image image = imageRepo.findImageById(idImage);
         Page page = getPageById(idNotice);
         page.setImage(image);
     }
@@ -87,7 +87,7 @@ public class PageSevice {
         return pageToUpdate;
     }
 
-    public Page updatePageProcess(Long noticeId, String processNumber) {
+    public Page updatePageProcess(String noticeId, String processNumber) {
         Page pageToUpdate = noticeRepo.findNoticeById(noticeId);
         if(pageToUpdate.getProcess() == null) {
             Process process = Process.builder()
@@ -105,7 +105,7 @@ public class PageSevice {
 
 
 
-    public void addPayment(Long noticeId, BigDecimal value) {
+    public void addPayment(String noticeId, BigDecimal value) {
         Page page = noticeRepo.findNoticeById(noticeId);
         Payment payment = Payment.builder()
                 .date(new Date())

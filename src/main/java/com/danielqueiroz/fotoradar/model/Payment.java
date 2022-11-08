@@ -2,37 +2,34 @@ package com.danielqueiroz.fotoradar.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Data
-@Entity
-@Table(name = "payment")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document
+@Setter
 public class Payment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
     private Date date;
     private BigDecimal value;
 
-    @ManyToOne
+//    @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "page_id")
+//    @JoinColumn(name = "page_id")
     private Page page;
 
-    @ManyToOne
+//    @ManyToOne
     @JsonManagedReference
-    @JoinColumn
+//    @JoinColumn
     private Company company;
 
 }
