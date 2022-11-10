@@ -1,6 +1,8 @@
 package com.danielqueiroz.fotoradar.model;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -16,8 +18,7 @@ import java.util.Collection;
 @Document
 public class Company {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
     private String id;
 
     private String name;
@@ -29,12 +30,10 @@ public class Company {
     private String host;
     private String mail;
 
-//    @OneToMany
-//    @JoinColumn(name = "contact_id")
+    @DBRef
     private Collection<Contact> contacts = new ArrayList<>();
 
-//    @OneToMany
-//    @JoinColumn(name = "page_id")
+    @DBRef
     private Collection<Page> pages =  new ArrayList<>();
 
 }

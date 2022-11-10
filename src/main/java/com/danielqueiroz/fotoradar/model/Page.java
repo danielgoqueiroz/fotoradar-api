@@ -2,6 +2,8 @@ package com.danielqueiroz.fotoradar.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Setter
@@ -12,22 +14,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Page {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
     private String id;
 
     private String url;
 
-//    @ManyToOne
-    @JsonManagedReference
+    @DBRef
     private Image image;
 
-//    @ManyToOne
-    @JsonManagedReference
+    @DBRef
     private Company company;
 
-//    @ManyToOne
-    @JsonManagedReference
+    @DBRef
     private Process process;
 
 }

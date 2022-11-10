@@ -1,6 +1,8 @@
 package com.danielqueiroz.fotoradar.model;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -12,13 +14,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class Contact {
 
-//    @Id
-//    @Column(nullable = false)
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
     private String id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "company_id")
+    @DBRef
     private Company company;
 
 }
