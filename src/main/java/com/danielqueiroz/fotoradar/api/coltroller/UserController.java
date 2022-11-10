@@ -36,7 +36,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUser());
     }
 
-    @PostMapping(value = "/save", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/save", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveUser(@RequestBody UserDTO user) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/save").toUriString());
         try {
@@ -59,7 +59,7 @@ public class UserController {
         }
     }
 
-    @PutMapping (value = "", consumes = APPLICATION_JSON_VALUE,  produces = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUser(@RequestBody UserDTO user) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
