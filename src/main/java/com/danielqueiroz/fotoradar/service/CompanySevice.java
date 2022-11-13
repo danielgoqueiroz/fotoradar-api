@@ -28,12 +28,12 @@ public class CompanySevice {
     public Company updateCompany(CompanyDTO company) {
         Company companyToUpdate = companyRepo.findFirstCompanyByHost(company.getHost());
         companyToUpdate.setAddress(company.getAddress());
-        companyToUpdate.setMail(company.getMail());
+        companyToUpdate.setEmail(company.getMail());
         companyToUpdate.setCnpj(company.getCnpj());
         companyToUpdate.setName(company.getName());
         companyToUpdate.setAddress(company.getAddress());
         companyToUpdate.setPhone(company.getPhone());
-        companyToUpdate.setSuidResponsable(company.getSuidResponsable());
+//        companyToUpdate.setResponsable(company.getSuidResponsable());
         return companyToUpdate;
     }
 

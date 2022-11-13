@@ -17,6 +17,17 @@ public class Contact {
     @Id
     private String id;
 
+    private String name;
+    private String phone;
+    private String email;
+    private String cpf;
+    private String rg;
+    private String address;
+    private String city;
+    private String state;
+    private String zipCode;
+    private String country;
+
     @DBRef
     private Company company;
 

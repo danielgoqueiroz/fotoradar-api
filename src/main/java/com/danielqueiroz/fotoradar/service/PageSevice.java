@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
@@ -29,7 +26,7 @@ import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 public class PageSevice {
 
     private final ImageRepo imageRepo;
-    private final NoticeRepo noticeRepo;
+    private final PageRepo pageRepo;
     private final PaymentRepo paymentRepo;
     private final UserRepo userRepo;
     private final ProcessRepo processRepo;
@@ -41,12 +38,12 @@ public class PageSevice {
         String username = (String) auth.getPrincipal();
         User user = userRepo.findUserByUsername(username);
 
-        Collection<Page> allNotices = noticeRepo.findAll();
+        Collection<Page> allNotices = pageRepo.findAll();
         return allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
     }
 
     public Page getPageById(String id) {
-        return noticeRepo.findNoticeById(id);
+        return pageRepo.findPageById(id);
     }
 
     public Page save(String username, String url, String imageId) throws NoticeException, MalformedURLException {
@@ -65,22 +62,37 @@ public class PageSevice {
 
         Page page = Page.builder()
                 .url(url)
-                .image(image)
+                .images(Collections.singleton(image))
                 .company(company)
                 .build();
 
-        Page pageSaved = noticeRepo.save(page);
+        Page pageSaved = pageRepo.save(page);
         return pageSaved;
+    }
+
+    public void addImageOnPageWithUrl(String imageId, String url) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+
+        Image image = imageRepo.findImageById(imageId);
+
+        Page page = Page.builder()
+                .images(Collections.singleton(image))
+                .url(url)
+                .build();
+
+        pageRepo.save(page);
     }
 
     public void addImageOnPage(String idImage, String idNotice) {
         Image image = imageRepo.findImageById(idImage);
         Page page = getPageById(idNotice);
-        page.setImage(image);
+        page.setImages(Collections.singleton(image));
+        pageRepo.save(page);
     }
 
     public Page updatePage(Page page) {
-        Page pageToUpdate = noticeRepo.findNoticeById(page.getId());
+        Page pageToUpdate = pageRepo.findPageById(page.getId());
         pageToUpdate.setCompany(page.getCompany());
         pageToUpdate.setUrl(page.getUrl());
 //        noticeToUpdate.setProcessNumber(notice.getProcessNumber());
@@ -88,33 +100,31 @@ public class PageSevice {
     }
 
     public Page updatePageProcess(String noticeId, String processNumber) {
-        Page pageToUpdate = noticeRepo.findNoticeById(noticeId);
-        if(pageToUpdate.getProcess() == null) {
-            Process process = Process.builder()
-                    .processNumber(processNumber).build();
-            Process processByProcessNumber = processRepo.findProcessByProcessNumber(processNumber);
-            if (processByProcessNumber == null) {
-                Process processSaved = processRepo.save(process);
-                pageToUpdate.setProcess(processSaved);
-            }
-
-        };
+        Page pageToUpdate = pageRepo.findPageById(noticeId);
+//        if(pageToUpdate.getProcess() == null) {
+//            Process process = Process.builder()
+//                    .processNumber(processNumber).build();
+//            Process processByProcessNumber = processRepo.findProcessByProcessNumber(processNumber);
+//            if (processByProcessNumber == null) {
+//                Process processSaved = processRepo.save(process);
+//                pageToUpdate.setProcess(processSaved);
+//            }
+//
+//        };
 
         return pageToUpdate;
     }
 
 
 
-    public void addPayment(String noticeId, BigDecimal value) {
-        Page page = noticeRepo.findNoticeById(noticeId);
-        Payment payment = Payment.builder()
-                .date(new Date())
-                .value(value)
-                .page(page)
-//                .company(notice.getCompany())
-//                .user(notice.getUser())
-                .build();
-        paymentRepo.save(payment);
 
-    }
+//    public void addPayment(String pageId, BigDecimal value) {
+//        Page page = pageRepo.findPageById(pageId);
+//        Process process = processRepo.findProcessByPageId(pageId);
+//        Payment payment = Payment.builder()
+//                .date(new Date())
+//                .value(value)
+//                .build();
+//        paymentRepo.save(payment);
+//    }
 }

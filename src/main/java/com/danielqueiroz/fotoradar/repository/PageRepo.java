@@ -5,8 +5,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface NoticeRepo extends MongoRepository<Page, String> {
-    Page findNoticeById(String id);
+public interface PageRepo extends MongoRepository<Page, String> {
+    Page findPageById(String id);
     List<Page> findAll();
 
 }

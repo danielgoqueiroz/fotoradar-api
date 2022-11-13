@@ -23,17 +23,14 @@ public class Company {
 
     private String name;
     private String cnpj;
-    private String suidResponsable;
-    private String nameResponsable;
+    private String email;
     private String phone;
     private String address;
     private String host;
-    private String mail;
+
+    private Contact responsable;
 
     @DBRef
     private Collection<Contact> contacts = new ArrayList<>();
-
-    @DBRef
-    private Collection<Page> pages =  new ArrayList<>();
 
 }

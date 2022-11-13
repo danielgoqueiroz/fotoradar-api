@@ -48,16 +48,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.authorizeRequests().antMatchers("/**").permitAll();
-//        http.authorizeRequests().antMatchers(GET, "/**").permitAll();
-//        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").permitAll();
-//        http.authorizeRequests().antMatchers(POST, "/api/image/**", "/api/notice/**", "/api/notice/**").authenticated();
-//        http.authorizeRequests().antMatchers(GET, "/api/image/**", "/api/user/**", "/api/notice/**", "/api/company/**").authenticated();
-//        http.authorizeRequests().antMatchers(PUT, "/api/company/**", "/api/notice/**").authenticated();
-//        http.authorizeRequests().antMatchers(DELETE, "/api/image/**").authenticated();
-//
-//        http.authorizeRequests().antMatchers(GET, "/api/user**", "/api/image/**", "/api/notice/**").hasAnyAuthority("ROLE_USER");
-//        http.authorizeRequests().antMatchers("/api/user/**").authenticated();
-//        http.authorizeRequests().antMatchers("/api/user/**").authenticated();
+        http.authorizeRequests().antMatchers(GET, "/**").permitAll();
+        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").permitAll();
+        http.authorizeRequests().antMatchers(POST, "/api/image/**", "/api/notice/**", "/api/notice/**").authenticated();
+        http.authorizeRequests().antMatchers(GET, "/api/image/**", "/api/user/**", "/api/notice/**", "/api/company/**").authenticated();
+        http.authorizeRequests().antMatchers(PUT, "/api/company/**", "/api/notice/**").authenticated();
+        http.authorizeRequests().antMatchers(DELETE, "/api/image/**").authenticated();
+
+        http.authorizeRequests().antMatchers(GET, "/api/user**", "/api/image/**", "/api/notice/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers("/api/user/**").authenticated();
+        http.authorizeRequests().antMatchers("/api/user/**").authenticated();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

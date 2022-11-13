@@ -1,10 +1,14 @@
 package com.danielqueiroz.fotoradar.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Setter
 @Getter
@@ -20,12 +24,9 @@ public class Page {
     private String url;
 
     @DBRef
-    private Image image;
+    private Collection<Image> images;
 
     @DBRef
     private Company company;
-
-    @DBRef
-    private Process process;
 
 }

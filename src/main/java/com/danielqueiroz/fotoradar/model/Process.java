@@ -1,11 +1,14 @@
 package com.danielqueiroz.fotoradar.model;
 
+import com.danielqueiroz.fotoradar.service.PageSevice;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -15,17 +18,18 @@ import java.util.Date;
 @Setter
 public class Process {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
     private String processNumber;
-    private Date processDate;
+    private Date createdAt;
 
     @DBRef
-    private Collection<Page> pages;
+    private Collection<Page> pages = Collections.emptyList();
 
     @DBRef
-    private Attorney attorney;
+    private Collection<Attorney> attorney = Collections.emptyList();
+
+    @DBRef
+    private Collection<Payment> payments = Collections.emptyList();
 
 }

@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,31 +60,37 @@ public class PageController {
 
     }
 
-    @PostMapping("/add-image-on-notice")
-    public ResponseEntity<?> addImageOnUsage(@RequestParam String idPage, @RequestParam String idImage) {
-        pageService.addImageOnPage(idImage, idPage);
+    @PostMapping("/add-image-on-page")
+    public ResponseEntity<?> addUsageToImageByImageId(@RequestParam String url, @RequestParam String imageId) {
+        pageService.addImageOnPageWithUrl(imageId, url);
         return ResponseEntity.ok().build();
     }
 
+//    @PostMapping("/add-image-on-page")
+//    public ResponseEntity<?> addImageOnUsage(@RequestParam String idPage, @RequestParam String idImage) {
+//        pageService.addImageOnPage(idImage, idPage);
+//        return ResponseEntity.ok().build();
+//    }
+
     @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateNotice(@RequestBody Page page) {
+    public ResponseEntity<?> updatePage(@RequestBody Page page) {
         Page pageUpdated = pageService.updatePage(page);
         return ResponseEntity.ok(pageUpdated);
     }
 
     @PutMapping(value = "process", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updatePageProcess(@RequestParam String noticeId, @RequestParam String processNumber) {
-        Page pageUpdated = pageService.updatePageProcess(noticeId, processNumber);
+    public ResponseEntity<?> updatePageProcess(@RequestParam String pageId, @RequestParam String processNumber) {
+        Page pageUpdated = pageService.updatePageProcess(pageId, processNumber);
         return ResponseEntity.ok(pageUpdated);
     }
 
-    @PostMapping("add-payment")
-    public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {
-
-        BigDecimal valueDecimal = BigDecimal.valueOf(Long.valueOf(value));
-        pageService.addPayment(idNotice, valueDecimal);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("add-payment")
+//    public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {
+//
+//        BigDecimal valueDecimal = BigDecimal.valueOf(Long.valueOf(value));
+//        pageService.addPayment(idNotice, valueDecimal);
+//        return ResponseEntity.ok().build();
+//    }
 
 //    @PostMapping("/links")
 //    @PreAuthorize("hasRole('USER')")

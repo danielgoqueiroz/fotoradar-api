@@ -31,7 +31,4 @@ public class Image {
     @JsonIgnore
     private String blob;
 
-    @DBRef
-    private Collection<Page> pages;
-
 }

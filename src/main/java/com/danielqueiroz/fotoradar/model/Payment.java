@@ -23,10 +23,4 @@ public class Payment {
     private Date date;
     private BigDecimal value;
 
-    @DBRef
-    private Page page;
-
-    @DBRef
-    private Company company;
-
 }
