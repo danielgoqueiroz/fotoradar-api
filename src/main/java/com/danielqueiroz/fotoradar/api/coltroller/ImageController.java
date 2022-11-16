@@ -24,6 +24,11 @@ public class ImageController {
         return ok().body(imageService.findAll());
     }
 
+    @GetMapping("/find-by-id")
+    public ResponseEntity<?> findImage(@RequestParam String id) {
+        return ok().body(imageService.findImage(id));
+    }
+
 //    @PreAuthorize("hasRole('USER')")
     @PostMapping(value = "" , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveImage(@RequestBody ImageDTO image) {

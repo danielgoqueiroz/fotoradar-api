@@ -7,6 +7,7 @@ import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.repository.ImageRepo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -90,5 +91,10 @@ public class ImageService {
 
     public void delete(String id) {
         imageRepo.deleteById(id);
+    }
+
+    public Image findImage(String id) {
+        return imageRepo.findOne(Example.of(Image.builder().id(id).build()))
+                .orElseThrow(() -> new RuntimeException("Imagem não encontrada"));
     }
 }

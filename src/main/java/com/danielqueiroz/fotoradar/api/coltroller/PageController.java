@@ -37,25 +37,14 @@ public class PageController {
 
     }
 
-    @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveUsage(@RequestBody PageDTO pagessLinks) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = (String) auth.getPrincipal();
+    @GetMapping("/find-by-image-id")
+    public ResponseEntity<?> getPagesByImageId(@RequestParam String id) {
 
-        List<Page> pages = new ArrayList<>();
-        List<String> erros = new ArrayList<>();
-
-        pagessLinks.getLinks().forEach(link -> {
-            try {
-                pages.add(pageService.save(username, link, pagessLinks.getImageId()));
-            } catch (Exception e) {
-                erros.add(e.getMessage());
-            }
-        });
-        if (erros.isEmpty()) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().body(erros);
+        try {
+            List<Page> pages = pageService.getPagesByImgageId(id);
+            return ok().body(pages);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }

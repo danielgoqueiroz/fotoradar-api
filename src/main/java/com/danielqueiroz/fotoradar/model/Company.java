@@ -28,6 +28,7 @@ public class Company {
     private String address;
     private String host;
 
+    @DBRef
     private Contact responsable;
 
     @DBRef

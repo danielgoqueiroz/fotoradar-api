@@ -23,10 +23,10 @@ public class Page {
 
     private String url;
 
-    @DBRef
-    private Collection<Image> images;
+//    @DBRef
+    private Image image;
 
-    @DBRef
+//    @DBRef
     private Company company;
 
 }

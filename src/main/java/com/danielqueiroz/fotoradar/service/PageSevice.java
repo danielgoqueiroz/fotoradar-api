@@ -6,6 +6,7 @@ import com.danielqueiroz.fotoradar.model.Process;
 import com.danielqueiroz.fotoradar.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,36 +39,39 @@ public class PageSevice {
         String username = (String) auth.getPrincipal();
         User user = userRepo.findUserByUsername(username);
 
-        Collection<Page> allNotices = pageRepo.findAll();
-        return allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
+        User userFinder = User.builder()
+                .id(user.getId())
+                .build();
+        Page pageExample = Page.builder()
+                .image(Image.builder()
+                        .user(userFinder)
+                        .build())
+                .build();
+        List<Page> pages = pageRepo.findAll(Example.of(pageExample));
+        return pages;
+    }
+
+    public List<Page> getPagesByImgageId(String imageId) throws NoticeException {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+
+        User user = userRepo.findUserByUsername(username);
+        Image image = imageRepo.findOne(Example.of(Image.builder()
+                        .id(imageId)
+                        .user(user)
+                        .build()))
+                .orElseThrow(() -> new NoticeException("Imagem não encontrada"));
+
+        Page pageExample = Page.builder()
+                .image(image)
+                .build();
+        List<Page> pages = pageRepo.findAll(Example.of(pageExample));
+        return pages;
     }
 
     public Page getPageById(String id) {
         return pageRepo.findPageById(id);
-    }
-
-    public Page save(String username, String url, String imageId) throws NoticeException, MalformedURLException {
-        String hash = getHash(url);
-
-        String host = new URL(url).getHost();
-        Company company = companyRepo.findFirstCompanyByHost(host);
-        if (company == null) {
-            company = Company.builder()
-                    .host(host)
-                    .build();
-            companyRepo.save(company);
-        }
-        User user = userRepo.findUserByUsername(username);
-        Image image = imageRepo.findImageById(imageId);
-
-        Page page = Page.builder()
-                .url(url)
-                .images(Collections.singleton(image))
-                .company(company)
-                .build();
-
-        Page pageSaved = pageRepo.save(page);
-        return pageSaved;
     }
 
     public void addImageOnPageWithUrl(String imageId, String url) {
@@ -76,18 +80,52 @@ public class PageSevice {
 
         Image image = imageRepo.findImageById(imageId);
 
-        Page page = Page.builder()
-                .images(Collections.singleton(image))
-                .url(url)
-                .build();
+        Company company = getCompany(url);
 
-        pageRepo.save(page);
+        pageRepo.findOne(Example.of(Page.builder().url(url).build()))
+                .ifPresentOrElse(page -> {
+                    page.setImage(image);
+                    pageRepo.save(page);
+                }, () -> {
+                    Page page = Page.builder()
+                            .url(url)
+                            .company(company)
+                            .image(image)
+                            .build();
+                    pageRepo.save(page);
+                });
+    }
+
+    private Company getCompany(String url) {
+        Optional<Company> companyOptional = companyRepo.findOne(Example.of(Company.builder()
+                .host(getHost(url))
+                .build()));
+
+        if (companyOptional.isPresent()) {
+            return companyOptional.get();
+        } else {
+            Company company = Company.builder()
+                    .host(getHost(url))
+                    .build();
+            companyRepo.save(company);
+            return company;
+        }
+    }
+
+    private String getHost(String url) {
+        URL netUrl = null;
+        try {
+            netUrl = new URL(url);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        return netUrl.getHost();
     }
 
     public void addImageOnPage(String idImage, String idNotice) {
         Image image = imageRepo.findImageById(idImage);
         Page page = getPageById(idNotice);
-        page.setImages(Collections.singleton(image));
+        page.setImage(image);
         pageRepo.save(page);
     }
 
@@ -114,8 +152,6 @@ public class PageSevice {
 
         return pageToUpdate;
     }
-
-
 
 
 //    public void addPayment(String pageId, BigDecimal value) {
