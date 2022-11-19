@@ -1,6 +1,7 @@
 package com.danielqueiroz.fotoradar.model;
 
 import com.danielqueiroz.fotoradar.service.PageSevice;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,6 +27,8 @@ public class Process {
     private String link;
     private Status status;
 
+    @JsonBackReference
+    @DBRef
     private Collection<Page> pages = Collections.emptyList();
 
     private Collection<Attorney> attorney = Collections.emptyList();

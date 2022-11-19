@@ -142,20 +142,21 @@ public class PageSevice {
     }
 
     public Page updatePageProcess(String pageId, String processNumber) {
-        Page pageToUpdate = pageRepo.findOne(Example.of(Page.builder()
+        Page page = pageRepo.findOne(Example.of(Page.builder()
                 .id(pageId)
                 .build())).get();
 
-        Optional<Process> processOptional = processRepo.findOne(Example.of(Process.builder()
-                .processNumber(processNumber)
-                .build()));
-        if (processOptional.isEmpty()) {
+        if (page.getProcess() == null) {
             Process process = processRepo.save(Process.builder()
                     .processNumber(processNumber)
+                    .pages(Collections.singleton(page))
                     .build());
-            pageToUpdate.setProcess(process);
+            page.setProcess(process);
+            return pageRepo.save(page);
+        } else {
+            page.getProcess().setProcessNumber(processNumber);
+            return pageRepo.save(page);
         }
-        return pageRepo.save(pageToUpdate);
 
     }
 }
