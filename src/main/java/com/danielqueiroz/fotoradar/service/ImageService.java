@@ -3,6 +3,7 @@ package com.danielqueiroz.fotoradar.service;
 import com.danielqueiroz.fotoradar.api.model.ImageDTO;
 import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
 import com.danielqueiroz.fotoradar.model.Image;
+import com.danielqueiroz.fotoradar.model.Page;
 import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.repository.ImageRepo;
 import lombok.AllArgsConstructor;

@@ -1,14 +1,10 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
-import com.danielqueiroz.fotoradar.api.model.PageDTO;
 import com.danielqueiroz.fotoradar.model.Page;
 import com.danielqueiroz.fotoradar.service.PageSevice;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -31,6 +27,18 @@ public class PageController {
         try {
             List<Page> pages = pageService.getPages();
             return ok().body(pages);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
+    @GetMapping("/find-by-id")
+    public ResponseEntity<?> getPageById(@RequestParam String id) {
+
+        try {
+            Page page = pageService.getPageById(id);
+            return ok().body(page);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -72,6 +80,7 @@ public class PageController {
         Page pageUpdated = pageService.updatePageProcess(pageId, processNumber);
         return ResponseEntity.ok(pageUpdated);
     }
+
 
 //    @PostMapping("add-payment")
 //    public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {

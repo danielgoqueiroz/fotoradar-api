@@ -38,6 +38,28 @@ public class ProcessController {
 
     }
 
+    @GetMapping("/find-by-id")
+    public ResponseEntity<?> getProcessById(@RequestParam String id) {
+        try {
+            Process processes = processService.getProcess(id);
+            return ok().body(processes);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
+    @PutMapping("")
+    public ResponseEntity<?> updateProcessNumber(@RequestParam String id, @RequestParam String processNumber) {
+        try {
+            Process processes = processService.updateProcessNumber(id, processNumber);
+            return ok().body(processes);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
 }
 
 

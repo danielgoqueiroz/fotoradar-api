@@ -1,25 +1,18 @@
 package com.danielqueiroz.fotoradar.service;
 
-import com.danielqueiroz.fotoradar.exception.NoticeException;
 import com.danielqueiroz.fotoradar.model.*;
 import com.danielqueiroz.fotoradar.model.Process;
 import com.danielqueiroz.fotoradar.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
+import java.util.*;
 
 @Transactional
 @Slf4j
@@ -28,14 +21,16 @@ import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 public class ProcessSevice {
 
     private final ProcessRepo processRepo;
+    private final UserRepo userRepo;
 
     public List<Process> getProcesses() {
 
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String username = (String) auth.getPrincipal();
-//        User user = userRepo.findUserByUsername(username);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userRepo.findUserByUsername(username);
 
-        List<Process> processes = processRepo.findAll();
+        List<Process> processes = processRepo.findAll(Example.of(Process.builder().build()));
+
         return processes;
     }
 
@@ -48,6 +43,21 @@ public class ProcessSevice {
         processRepo.save(process);
     }
 
+    public Process updateProcessNumber(String id, String processNumber) {
+        Optional<Process> processOpt = processRepo.findOne(Example.of(Process.builder().id(id).build()));
+        if (processOpt.isPresent()) {
+            Process process = processOpt.get();
+            process.setProcessNumber(processNumber);
+            processRepo.save(process);
+            return process;
+        }
+        return null;
+
+    }
+
+    public Process getProcess(String id) {
+        return processRepo.findOne(Example.of(Process.builder().id(id).build())).get();
+    }
 
 
 //    public Page getPageById(String id) {

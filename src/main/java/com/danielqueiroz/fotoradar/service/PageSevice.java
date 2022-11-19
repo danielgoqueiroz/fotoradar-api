@@ -12,13 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 
 @Transactional
 @Slf4j
@@ -51,6 +47,18 @@ public class PageSevice {
         return pages;
     }
 
+    public Page getPageById(String id) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userRepo.findUserByUsername(username);
+
+        Page pageExample = Page.builder()
+                .id(id)
+                .build();
+        return pageRepo.findOne(Example.of(pageExample)).get();
+    }
+
     public List<Page> getPagesByImgageId(String imageId) throws NoticeException {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -68,10 +76,6 @@ public class PageSevice {
                 .build();
         List<Page> pages = pageRepo.findAll(Example.of(pageExample));
         return pages;
-    }
-
-    public Page getPageById(String id) {
-        return pageRepo.findPageById(id);
     }
 
     public void addImageOnPageWithUrl(String imageId, String url) {
@@ -137,21 +141,24 @@ public class PageSevice {
         return pageToUpdate;
     }
 
-    public Page updatePageProcess(String noticeId, String processNumber) {
-        Page pageToUpdate = pageRepo.findPageById(noticeId);
-//        if(pageToUpdate.getProcess() == null) {
-//            Process process = Process.builder()
-//                    .processNumber(processNumber).build();
-//            Process processByProcessNumber = processRepo.findProcessByProcessNumber(processNumber);
-//            if (processByProcessNumber == null) {
-//                Process processSaved = processRepo.save(process);
-//                pageToUpdate.setProcess(processSaved);
-//            }
-//
-//        };
+    public Page updatePageProcess(String pageId, String processNumber) {
+        Page pageToUpdate = pageRepo.findOne(Example.of(Page.builder()
+                .id(pageId)
+                .build())).get();
 
-        return pageToUpdate;
+        Optional<Process> processOptional = processRepo.findOne(Example.of(Process.builder()
+                .processNumber(processNumber)
+                .build()));
+        if (processOptional.isEmpty()) {
+            Process process = processRepo.save(Process.builder()
+                    .processNumber(processNumber)
+                    .build());
+            pageToUpdate.setProcess(process);
+        }
+        return pageRepo.save(pageToUpdate);
+
     }
+}
 
 
 //    public void addPayment(String pageId, BigDecimal value) {
@@ -163,4 +170,4 @@ public class PageSevice {
 //                .build();
 //        paymentRepo.save(payment);
 //    }
-}
+

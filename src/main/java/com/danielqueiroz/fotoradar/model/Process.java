@@ -22,14 +22,14 @@ public class Process {
 
     private String processNumber;
     private Date createdAt;
+    private String description;
+    private String link;
+    private Status status;
 
-    @DBRef
     private Collection<Page> pages = Collections.emptyList();
 
-    @DBRef
     private Collection<Attorney> attorney = Collections.emptyList();
 
-    @DBRef
     private Collection<Payment> payments = Collections.emptyList();
 
 }

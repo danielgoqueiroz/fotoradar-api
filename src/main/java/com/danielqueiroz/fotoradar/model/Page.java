@@ -23,10 +23,11 @@ public class Page {
 
     private String url;
 
-//    @DBRef
     private Image image;
 
-//    @DBRef
     private Company company;
+
+    @DBRef
+    private Process process;
 
 }

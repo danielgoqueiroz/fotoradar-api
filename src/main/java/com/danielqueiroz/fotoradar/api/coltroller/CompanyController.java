@@ -25,6 +25,11 @@ public class CompanyController {
         return ok().body(companySevice.findCompanies());
     }
 
+    @GetMapping("/find-by-id")
+    public ResponseEntity<Company> getCompany(@RequestParam String id) {
+        return ok().body(companySevice.findCompany(id));
+    }
+
     @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Company> updateCompany(@RequestBody CompanyDTO company) {
         return ok().body(companySevice.updateCompany(company));
