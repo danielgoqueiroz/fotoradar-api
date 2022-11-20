@@ -60,6 +60,17 @@ public class ProcessController {
 
     }
 
+    @GetMapping("/add-payment")
+    public ResponseEntity<?> addPayment(@RequestParam String id, @RequestParam String value) {
+        try {
+            Process processes = processService.addPayment(id, value);
+            return ok().body(processes);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
 }
 
 

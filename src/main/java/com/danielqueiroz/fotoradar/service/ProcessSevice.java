@@ -34,13 +34,15 @@ public class ProcessSevice {
         return processes;
     }
 
-    public void addPayment(String processId, String value) {
-        Process process = processRepo.findProcessByProcessNumber(processId);
+    public Process addPayment(String processId, String value) {
+        Process process = processRepo.findOne(Example.of(Process.builder()
+                .id(processId).build())).get();
         process.getPayments().add(Payment.builder()
                 .value(new BigDecimal(value))
+                .date(new Date())
                 .build());
 
-        processRepo.save(process);
+        return processRepo.save(process);
     }
 
     public Process updateProcessNumber(String id, String processNumber) {

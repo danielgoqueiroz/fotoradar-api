@@ -6,10 +6,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @NoArgsConstructor
@@ -28,11 +25,11 @@ public class Process {
     private Status status;
 
     @JsonBackReference
-    @DBRef
-    private Collection<Page> pages = Collections.emptyList();
+    @DBRef(lazy = true)
+    private Collection<Page> pages = new ArrayList<>();
 
-    private Collection<Attorney> attorney = Collections.emptyList();
+    private Collection<Attorney> attorney = new ArrayList<>();
 
-    private Collection<Payment> payments = Collections.emptyList();
+    private Collection<Payment> payments = new ArrayList<>();
 
 }
