@@ -1,17 +1,29 @@
 package com.danielqueiroz.fotoradar.service;
 
-import com.danielqueiroz.fotoradar.model.*;
 import com.danielqueiroz.fotoradar.model.Process;
-import com.danielqueiroz.fotoradar.repository.*;
+import com.danielqueiroz.fotoradar.model.*;
+import com.danielqueiroz.fotoradar.repository.ProcessRepo;
+import com.danielqueiroz.fotoradar.repository.UserRepo;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Proc;
+import org.bson.BsonDocument;
+import org.bson.Document;
 import org.springframework.data.domain.Example;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.print.Doc;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Transactional
@@ -23,23 +35,36 @@ public class ProcessSevice {
     private final ProcessRepo processRepo;
     private final UserRepo userRepo;
 
-    public List<Process> getProcesses() {
+    private final MongoTemplate mongoTemplate;
+
+    public Collection<? super Document> getProcesses() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
         User user = userRepo.findUserByUsername(username);
 
-        List<Process> processes = processRepo.findAll(Example.of(Process.builder().build()));
+        FindIterable<Document> documents = mongoTemplate.getCollection("process")
+                .find(Criteria.where("pages.image.name").is("31").getCriteriaObject());
+        documents.forEach(process -> {
+            System.out.println(process);
+        });
 
-        return processes;
+        try {
+//            processes = process.find(new Document("pages", new Document("$elemMatch", new Document("image", new Document("user", user.getId()))))).into(new ArrayList<>());
+
+
+        } catch (Exception e) {
+            log.error("Error to get processes", e);
+        }
+        return null;
     }
 
-    public Process addPayment(String processId, String value) {
+    public Process addPayment(String processId, String value, String date) throws ParseException {
         Process process = processRepo.findOne(Example.of(Process.builder()
                 .id(processId).build())).get();
         process.getPayments().add(Payment.builder()
                 .value(new BigDecimal(value))
-                .date(new Date())
+                .date(new SimpleDateFormat("yyyy-MM-dd").parse(date))
                 .build());
 
         return processRepo.save(process);

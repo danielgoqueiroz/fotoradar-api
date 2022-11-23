@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
+import com.danielqueiroz.fotoradar.api.model.CreateUserDTO;
 import com.danielqueiroz.fotoradar.api.model.ErrorMessage;
 import com.danielqueiroz.fotoradar.api.model.UserDTO;
 import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/save", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveUser(@RequestBody UserDTO user) {
+    public ResponseEntity<?> saveUser(@RequestBody CreateUserDTO user) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/save").toUriString());
         try {
             return ResponseEntity.created(uri).body(

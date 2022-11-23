@@ -25,7 +25,6 @@ public class Process {
     private Status status;
 
     @JsonBackReference
-    @DBRef(lazy = true)
     private Collection<Page> pages = new ArrayList<>();
 
     private Collection<Attorney> attorney = new ArrayList<>();
