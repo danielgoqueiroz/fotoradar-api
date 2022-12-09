@@ -25,10 +25,10 @@ public class Process {
     private Status status;
 
     @JsonBackReference
-    private Collection<Page> pages = new ArrayList<>();
+    private List<Page> pages = new ArrayList<>();
 
-    private Collection<Attorney> attorney = new ArrayList<>();
+    private List<Attorney> attorney = new ArrayList<>();
 
-    private Collection<Payment> payments = new ArrayList<>();
+    private List<Payment> payments = new ArrayList<>();
 
 }

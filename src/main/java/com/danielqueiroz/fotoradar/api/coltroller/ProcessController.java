@@ -2,11 +2,13 @@ package com.danielqueiroz.fotoradar.api.coltroller;
 
 import com.danielqueiroz.fotoradar.model.Process;
 import com.danielqueiroz.fotoradar.service.ProcessSevice;
+import org.apache.tomcat.jni.Proc;
 import org.bson.Document;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -24,7 +26,7 @@ public class ProcessController {
     @GetMapping("")
     public ResponseEntity<?> getProcesses() {
         try {
-            Collection<? super Document> processes = processService.getProcesses();
+            List<Process> processes = processService.getProcesses();
             return ok().body(processes);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

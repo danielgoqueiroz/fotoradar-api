@@ -149,7 +149,7 @@ public class PageSevice {
         if (page.getProcess() == null) {
             Process process = processRepo.save(Process.builder()
                     .processNumber(processNumber)
-                    .pages(Collections.singleton(page))
+                    .pages(Arrays.asList(page))
                     .build());
             page.setProcess(process);
             return pageRepo.save(page);
