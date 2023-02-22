@@ -2,7 +2,7 @@ package com.danielqueiroz.fotoradar.api.coltroller;
 
 import com.danielqueiroz.fotoradar.api.model.CompanyDTO;
 import com.danielqueiroz.fotoradar.model.Company;
-import com.danielqueiroz.fotoradar.service.CompanySevice;
+import com.danielqueiroz.fotoradar.service.CompanyService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +18,21 @@ import static org.springframework.http.ResponseEntity.ok;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CompanyController {
 
-    private final CompanySevice companySevice;
+    private final CompanyService companyService;
 
     @GetMapping("")
     public ResponseEntity<List<Company>> getCompanies() {
-        return ok().body(companySevice.findCompanies());
+        return ok().body(companyService.findCompanies());
     }
 
     @GetMapping("/find-by-id")
     public ResponseEntity<Company> getCompany(@RequestParam String id) {
-        return ok().body(companySevice.findCompany(id));
+        return ok().body(companyService.findCompany(id));
     }
 
     @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Company> updateCompany(@RequestBody CompanyDTO company) {
-        return ok().body(companySevice.updateCompany(company));
+        return ok().body(companyService.updateCompany(company));
     }
 
 //    @PostMapping("")

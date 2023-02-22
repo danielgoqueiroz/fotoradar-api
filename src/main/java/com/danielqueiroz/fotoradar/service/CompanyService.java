@@ -13,11 +13,11 @@ import java.util.List;
 @Transactional
 @Slf4j
 @Service
-public class CompanySevice {
+public class CompanyService {
 
     private final CompanyRepo companyRepo;
 
-    public CompanySevice(CompanyRepo companyRepo) {
+    public CompanyService(CompanyRepo companyRepo) {
         this.companyRepo = companyRepo;
     }
 
@@ -27,9 +27,11 @@ public class CompanySevice {
     }
 
     public Company findCompany(String companyId) {
-        return companyRepo.findOne(Example.of(Company.builder()
+        return companyRepo.findOne(Example.of(
+                Company.builder()
                         .id(companyId)
-                .build())).get();
+                        .build())
+        ).get();
     }
 
     public Company updateCompany(CompanyDTO company) {

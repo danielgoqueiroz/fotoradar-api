@@ -11,6 +11,7 @@ import com.mongodb.DBRef;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
@@ -55,16 +56,23 @@ public class ProcessSevice {
         MongoCollection<Document> collection = mongoTemplate.getCollection(mongoTemplate.getCollectionName(Process.class));
 
         FindIterable<Document> documents = collection
-                .find(Criteria.where("pages.image.user").is(new DBRef("user", new ObjectId(user.getId()))).getCriteriaObject());
+                .find(
+                        Criteria
+                                .where("pages.image.user")
+                                .is(new DBRef("user", new ObjectId(user.getId())))
+                                .getCriteriaObject()
+                );
 
         CodecRegistry codecRegistry = MongoClientSettings.getDefaultCodecRegistry();
         DocumentCodec codec = new DocumentCodec(codecRegistry);
 
         List<Process> processess = new ArrayList<>();
-        documents.forEach(processJson -> {
-            Process process = convertProcessBsonToPOJO(processJson);
+        MongoCursor<Document> iterator = documents.iterator();
+        while (iterator.hasNext()) {
+            Document next = iterator.next();
+            Process process = convertProcessBsonToPOJO(next);
             processess.add(process);
-        });
+        }
 
         return processess;
     }
@@ -75,13 +83,14 @@ public class ProcessSevice {
         process.getPayments().add(Payment.builder()
                 .value(new BigDecimal(value))
                 .date(getDate(date))
+
                 .build());
 
         return processRepo.save(process);
     }
 
     private Date getDate(String date) throws ParseException {
-        if(Strings.isNullOrEmpty(date)) {
+        if (Strings.isNullOrEmpty(date)) {
             return new Date();
         } else {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

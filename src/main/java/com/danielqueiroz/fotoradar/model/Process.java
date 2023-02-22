@@ -25,10 +25,13 @@ public class Process {
     private Status status;
 
     @JsonBackReference
+    @Builder.Default
     private List<Page> pages = new ArrayList<>();
 
+    @Builder.Default
     private List<Attorney> attorney = new ArrayList<>();
 
+    @Builder.Default
     private List<Payment> payments = new ArrayList<>();
 
 }

@@ -8,13 +8,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.Collection;
 
-//@Entity
-//@Table(name = "company")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
 @Document
 public class Company {
 
@@ -32,6 +31,7 @@ public class Company {
     private Contact responsable;
 
     @DBRef
+    @Builder.Default
     private Collection<Contact> contacts = new ArrayList<>();
 
 }
