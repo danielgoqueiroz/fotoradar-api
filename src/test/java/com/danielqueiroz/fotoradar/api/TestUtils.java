@@ -1,6 +1,7 @@
 package com.danielqueiroz.fotoradar.api;
 
 import com.danielqueiroz.fotoradar.contants.Const;
+import com.danielqueiroz.fotoradar.model.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -36,5 +37,16 @@ public class TestUtils {
         JSONObject jsonBody = new JSONObject(stringResponseEntity.getBody());
         String token = jsonBody.get("access_token").toString();
         return BEARER + token;
+    }
+
+    public static User createUser() {
+        User user = new User();
+        user.setUsername("daniel");
+        user.setPassword("senha123");
+        return user;
+    }
+
+    public static byte[] toJson(User user) throws JSONException {
+        return new JSONObject(String.valueOf(user)).toString().getBytes();
     }
 }

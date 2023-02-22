@@ -44,6 +44,7 @@ public class DevController {
 
 		User user = User.builder()
 				.username("teste")
+				.name("Teste Tester")
 				.email("teste@gmail.com")
 				.cpf("123456789")
 				.password("teste")

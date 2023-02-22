@@ -1,27 +1,34 @@
 package com.danielqueiroz.fotoradar.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "contact")
+@Document
+@Setter
+
 public class Contact {
 
     @Id
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
+    private String name;
+    private String phone;
+    private String email;
+    private String cpf;
+    private String rg;
+    private String address;
+    private String city;
+    private String state;
+    private String zipCode;
+    private String country;
+
+    @DBRef
     private Company company;
 
 }

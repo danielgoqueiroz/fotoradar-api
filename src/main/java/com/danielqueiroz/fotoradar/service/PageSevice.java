@@ -6,21 +6,15 @@ import com.danielqueiroz.fotoradar.model.Process;
 import com.danielqueiroz.fotoradar.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
+import java.util.*;
 
 @Transactional
 @Slf4j
@@ -29,7 +23,7 @@ import static com.danielqueiroz.fotoradar.utils.Utils.getHash;
 public class PageSevice {
 
     private final ImageRepo imageRepo;
-    private final NoticeRepo noticeRepo;
+    private final PageRepo pageRepo;
     private final PaymentRepo paymentRepo;
     private final UserRepo userRepo;
     private final ProcessRepo processRepo;
@@ -41,80 +35,140 @@ public class PageSevice {
         String username = (String) auth.getPrincipal();
         User user = userRepo.findUserByUsername(username);
 
-        Collection<Page> allNotices = noticeRepo.findAll();
-        return allNotices.stream().filter(n -> !Objects.isNull(n.getCompany())).collect(Collectors.toList());
+        User userFinder = User.builder()
+                .id(user.getId())
+                .build();
+        Page pageExample = Page.builder()
+                .image(Image.builder()
+                        .user(userFinder)
+                        .build())
+                .build();
+        List<Page> pages = pageRepo.findAll(Example.of(pageExample));
+        return pages;
     }
 
-    public Page getPageById(Long id) {
-        return noticeRepo.findNoticeById(id);
+    public Page getPageById(String id) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userRepo.findUserByUsername(username);
+
+        Page pageExample = Page.builder()
+                .id(id)
+                .build();
+        return pageRepo.findOne(Example.of(pageExample)).get();
     }
 
-    public Page save(String username, String url, Long imageId) throws NoticeException, MalformedURLException {
-        String hash = getHash(url);
+    public List<Page> getPagesByImgageId(String imageId) throws NoticeException {
 
-        String host = new URL(url).getHost();
-        Company company = companyRepo.findFirstCompanyByHost(host);
-        if (company == null) {
-            company = Company.builder()
-                    .host(host)
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+
+        User user = userRepo.findUserByUsername(username);
+        Image image = imageRepo.findOne(Example.of(Image.builder()
+                        .id(imageId)
+                        .user(user)
+                        .build()))
+                .orElseThrow(() -> new NoticeException("Imagem não encontrada"));
+
+        Page pageExample = Page.builder()
+                .image(image)
+                .build();
+        List<Page> pages = pageRepo.findAll(Example.of(pageExample));
+        return pages;
+    }
+
+    public void addImageOnPageWithUrl(String imageId, String url) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+
+        Image image = imageRepo.findImageById(imageId);
+
+        Company company = getCompany(url);
+
+        pageRepo.findOne(Example.of(Page.builder().url(url).build()))
+                .ifPresentOrElse(page -> {
+                    page.setImage(image);
+                    pageRepo.save(page);
+                }, () -> {
+                    Page page = Page.builder()
+                            .url(url)
+                            .company(company)
+                            .image(image)
+                            .build();
+                    pageRepo.save(page);
+                });
+    }
+
+    private Company getCompany(String url) {
+        Optional<Company> companyOptional = companyRepo.findOne(Example.of(Company.builder()
+                .host(getHost(url))
+                .build()));
+
+        if (companyOptional.isPresent()) {
+            return companyOptional.get();
+        } else {
+            Company company = Company.builder()
+                    .host(getHost(url))
                     .build();
             companyRepo.save(company);
+            return company;
         }
-        User user = userRepo.findUserByUsername(username);
-        Image image = imageRepo.getById(imageId);
-
-        Page page = Page.builder()
-                .url(url)
-                .image(image)
-                .company(company)
-                .build();
-
-        Page pageSaved = noticeRepo.save(page);
-        return pageSaved;
     }
 
-    public void addImageOnPage(Long idImage, Long idNotice) {
-        Image image = imageRepo.getById(idImage);
+    private String getHost(String url) {
+        URL netUrl = null;
+        try {
+            netUrl = new URL(url);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        return netUrl.getHost();
+    }
+
+    public void addImageOnPage(String idImage, String idNotice) {
+        Image image = imageRepo.findImageById(idImage);
         Page page = getPageById(idNotice);
         page.setImage(image);
+        pageRepo.save(page);
     }
 
     public Page updatePage(Page page) {
-        Page pageToUpdate = noticeRepo.findNoticeById(page.getId());
+        Page pageToUpdate = pageRepo.findPageById(page.getId());
         pageToUpdate.setCompany(page.getCompany());
         pageToUpdate.setUrl(page.getUrl());
 //        noticeToUpdate.setProcessNumber(notice.getProcessNumber());
         return pageToUpdate;
     }
 
-    public Page updatePageProcess(Long noticeId, String processNumber) {
-        Page pageToUpdate = noticeRepo.findNoticeById(noticeId);
-        if(pageToUpdate.getProcess() == null) {
-            Process process = Process.builder()
-                    .processNumber(processNumber).build();
-            Process processByProcessNumber = processRepo.findProcessByProcessNumber(processNumber);
-            if (processByProcessNumber == null) {
-                Process processSaved = processRepo.save(process);
-                pageToUpdate.setProcess(processSaved);
-            }
+    public Page updatePageProcess(String pageId, String processNumber) {
+        Page page = pageRepo.findOne(Example.of(Page.builder()
+                .id(pageId)
+                .build())).get();
 
-        };
-
-        return pageToUpdate;
-    }
-
-
-
-    public void addPayment(Long noticeId, BigDecimal value) {
-        Page page = noticeRepo.findNoticeById(noticeId);
-        Payment payment = Payment.builder()
-                .date(new Date())
-                .value(value)
-                .page(page)
-//                .company(notice.getCompany())
-//                .user(notice.getUser())
-                .build();
-        paymentRepo.save(payment);
+        if (page.getProcess() == null) {
+            Process process = processRepo.save(Process.builder()
+                    .processNumber(processNumber)
+                    .pages(Arrays.asList(page))
+                    .build());
+            page.setProcess(process);
+            return pageRepo.save(page);
+        } else {
+            page.getProcess().setProcessNumber(processNumber);
+            return pageRepo.save(page);
+        }
 
     }
 }
+
+
+//    public void addPayment(String pageId, BigDecimal value) {
+//        Page page = pageRepo.findPageById(pageId);
+//        Process process = processRepo.findProcessByPageId(pageId);
+//        Payment payment = Payment.builder()
+//                .date(new Date())
+//                .value(value)
+//                .build();
+//        paymentRepo.save(payment);
+//    }
+

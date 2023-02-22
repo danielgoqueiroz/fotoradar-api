@@ -4,6 +4,7 @@ import com.danielqueiroz.fotoradar.api.model.CompanyDTO;
 import com.danielqueiroz.fotoradar.model.Company;
 import com.danielqueiroz.fotoradar.repository.CompanyRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,15 +26,21 @@ public class CompanySevice {
         return companies;
     }
 
+    public Company findCompany(String companyId) {
+        return companyRepo.findOne(Example.of(Company.builder()
+                        .id(companyId)
+                .build())).get();
+    }
+
     public Company updateCompany(CompanyDTO company) {
         Company companyToUpdate = companyRepo.findFirstCompanyByHost(company.getHost());
         companyToUpdate.setAddress(company.getAddress());
-        companyToUpdate.setMail(company.getMail());
+        companyToUpdate.setEmail(company.getMail());
         companyToUpdate.setCnpj(company.getCnpj());
         companyToUpdate.setName(company.getName());
         companyToUpdate.setAddress(company.getAddress());
         companyToUpdate.setPhone(company.getPhone());
-        companyToUpdate.setSuidResponsable(company.getSuidResponsable());
+//        companyToUpdate.setResponsable(company.getSuidResponsable());
         return companyToUpdate;
     }
 

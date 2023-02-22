@@ -6,7 +6,6 @@ import com.danielqueiroz.fotoradar.service.ImageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -23,6 +22,11 @@ public class ImageController {
     @GetMapping("")
     public ResponseEntity<?> findImages() {
         return ok().body(imageService.findAll());
+    }
+
+    @GetMapping("/find-by-id")
+    public ResponseEntity<?> findImage(@RequestParam String id) {
+        return ok().body(imageService.findImage(id));
     }
 
 //    @PreAuthorize("hasRole('USER')")
@@ -43,8 +47,8 @@ public class ImageController {
     @DeleteMapping(value = "" , produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteImage(@RequestParam String id) {
         try {
-            Long aLong = Long.parseLong(id);
-            imageService.delete(aLong);
+
+            imageService.delete(id);
             return ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(

@@ -1,36 +1,34 @@
 package com.danielqueiroz.fotoradar.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.danielqueiroz.fotoradar.service.PageSevice;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-@Data
-@Entity
-@Table(name = "process")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document
+@Setter
 public class Process {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     private String processNumber;
-    private Date processDate;
+    private Date createdAt;
+    private String description;
+    private String link;
+    private Status status;
 
-    @OneToMany
-    @JoinColumn(name = "page_id")
-    private Collection<Page> pages;
+    @JsonBackReference
+    private List<Page> pages = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "attorney_id")
-    private Attorney attorney;
+    private List<Attorney> attorney = new ArrayList<>();
+
+    private List<Payment> payments = new ArrayList<>();
 
 }

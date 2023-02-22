@@ -1,15 +1,10 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
-import com.danielqueiroz.fotoradar.api.model.PageDTO;
 import com.danielqueiroz.fotoradar.model.Page;
 import com.danielqueiroz.fotoradar.service.PageSevice;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -38,54 +33,62 @@ public class PageController {
 
     }
 
-    @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveUsage(@RequestBody PageDTO pagessLinks) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = (String) auth.getPrincipal();
+    @GetMapping("/find-by-id")
+    public ResponseEntity<?> getPageById(@RequestParam String id) {
 
-        List<Page> pages = new ArrayList<>();
-        List<String> erros = new ArrayList<>();
-
-        pagessLinks.getLinks().forEach(link -> {
-            try {
-                pages.add(pageService.save(username, link, pagessLinks.getImageId()));
-            } catch (Exception e) {
-                erros.add(e.getMessage());
-            }
-        });
-        if (erros.isEmpty()) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().body(erros);
+        try {
+            Page page = pageService.getPageById(id);
+            return ok().body(page);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }
 
-    @PostMapping("/add-image-on-notice")
-    public ResponseEntity<?> addImageOnUsage(@RequestParam Long idPage, @RequestParam Long idImage) {
-        pageService.addImageOnPage(idImage, idPage);
+    @GetMapping("/find-by-image-id")
+    public ResponseEntity<?> getPagesByImageId(@RequestParam String id) {
+
+        try {
+            List<Page> pages = pageService.getPagesByImgageId(id);
+            return ok().body(pages);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping("/add-image-on-page")
+    public ResponseEntity<?> addUsageToImageByImageId(@RequestParam String url, @RequestParam String imageId) {
+        pageService.addImageOnPageWithUrl(imageId, url);
         return ResponseEntity.ok().build();
     }
 
+//    @PostMapping("/add-image-on-page")
+//    public ResponseEntity<?> addImageOnUsage(@RequestParam String idPage, @RequestParam String idImage) {
+//        pageService.addImageOnPage(idImage, idPage);
+//        return ResponseEntity.ok().build();
+//    }
+
     @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateNotice(@RequestBody Page page) {
+    public ResponseEntity<?> updatePage(@RequestBody Page page) {
         Page pageUpdated = pageService.updatePage(page);
         return ResponseEntity.ok(pageUpdated);
     }
 
     @PutMapping(value = "process", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updatePageProcess(@RequestParam String noticeId, @RequestParam String processNumber) {
-        Page pageUpdated = pageService.updatePageProcess(Long.valueOf(noticeId), processNumber);
+    public ResponseEntity<?> updatePageProcess(@RequestParam String pageId, @RequestParam String processNumber) {
+        Page pageUpdated = pageService.updatePageProcess(pageId, processNumber);
         return ResponseEntity.ok(pageUpdated);
     }
 
-    @PostMapping("add-payment")
-    public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {
 
-        BigDecimal valueDecimal = BigDecimal.valueOf(Long.valueOf(value));
-        pageService.addPayment(Long.valueOf(idNotice), valueDecimal);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("add-payment")
+//    public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {
+//
+//        BigDecimal valueDecimal = BigDecimal.valueOf(Long.valueOf(value));
+//        pageService.addPayment(idNotice, valueDecimal);
+//        return ResponseEntity.ok().build();
+//    }
 
 //    @PostMapping("/links")
 //    @PreAuthorize("hasRole('USER')")

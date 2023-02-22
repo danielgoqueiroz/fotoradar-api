@@ -1,11 +1,9 @@
 package com.danielqueiroz.fotoradar.repository;
 
 import com.danielqueiroz.fotoradar.model.Payment;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface PaymentRepo extends JpaRepository<Payment, Long> {
-
-    List<Payment> findAllByPageId(Long noticeId);
+public interface PaymentRepo extends MongoRepository<Payment, String> {
 }

@@ -1,7 +1,10 @@
 package com.danielqueiroz.fotoradar.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 //@Data
@@ -10,15 +13,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Document("user")
 @Getter
-public class UserDTO {
+public class CreateUserDTO {
 
     private String name;
     private String email;
-    @JsonIgnore
     private String cpf;
     private String username;
-
-    @JsonIgnore
     private String password;
 
 }
