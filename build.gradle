@@ -35,6 +35,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
+
+
     implementation 'org.springframework.boot:spring-boot-starter-security:2.7.0'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.0'
     implementation 'com.google.guava:guava:31.1-jre'
@@ -48,7 +50,11 @@ dependencies {
     runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.7.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE'
-    testImplementation 'org.springframework.security:spring-security-test:5.7.1'
+    testImplementation 'org.springframework.security:spring-security-test:5.7.7'
+    testImplementation 'org.springframework.security:spring-security-core:5.7.7'
+    testImplementation 'org.springframework.security:spring-security-web:5.7.7'
+    testImplementation 'org.springframework.security:spring-security-config:5.7.1'
+
     testImplementation 'org.testcontainers:junit-jupiter:1.16.2'
     testImplementation 'org.testcontainers:mysql:1.16.2'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.5'
