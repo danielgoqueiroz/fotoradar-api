@@ -7,6 +7,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'org.springframework.boot' version '2.7.5'
 }
 
 repositories {
@@ -30,6 +31,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.7.5'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.7.5'
     implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.7.5'
+
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.7.5'
+
     implementation 'com.auth0:java-jwt:3.19.1'
     implementation 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
 
@@ -37,28 +44,27 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.7.5'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.5'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
+    implementation 'org.springframework.security:spring-security-web:5.3.13.RELEASE'
     implementation 'org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE'
-
+    implementation 'org.springframework.security:spring-security-config:5.3.13.RELEASE'
 
     implementation 'com.google.guava:guava:31.1-jre'
-    implementation 'org.springframework:spring-webflux:5.3.21'
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.7.5'
-//    implementation 'org.mongodb:mongo-java-driver:3.12.12'
+
+//    implementation 'org.springframework:spring-webflux:5.3.21'
+
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'commons-net:commons-net:3.9.0'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-    implementation 'commons-net:commons-net:3.9.0'
-    implementation 'com.google.code.gson:gson:2.10'
-    runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.7.0'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE'
 
-    testImplementation 'org.testcontainers:junit-jupiter:1.16.2'
-    testImplementation 'org.testcontainers:mysql:1.16.2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
+
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.5'
 
 }
+
+
 
 group = 'com.danielqueiroz'
 version = '0.0.1-SNAPSHOT'

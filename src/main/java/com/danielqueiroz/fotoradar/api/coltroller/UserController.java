@@ -2,11 +2,11 @@ package com.danielqueiroz.fotoradar.api.coltroller;
 
 import com.danielqueiroz.fotoradar.api.model.CreateUserDTO;
 import com.danielqueiroz.fotoradar.api.model.ErrorMessage;
+import com.danielqueiroz.fotoradar.api.model.RoleToUserFormDTO;
 import com.danielqueiroz.fotoradar.api.model.UserDTO;
 import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
 import com.danielqueiroz.fotoradar.exception.ValidationException;
 import com.danielqueiroz.fotoradar.model.Role;
-import com.danielqueiroz.fotoradar.api.model.RoleToUserFormDTO;
 import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.service.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.Collections;
 
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/api/user")

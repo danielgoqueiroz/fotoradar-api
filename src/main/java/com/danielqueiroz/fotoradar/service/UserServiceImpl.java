@@ -2,14 +2,13 @@ package com.danielqueiroz.fotoradar.service;
 
 import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
 import com.danielqueiroz.fotoradar.exception.ValidationException;
-import com.danielqueiroz.fotoradar.repository.RoleRepo;
-import com.danielqueiroz.fotoradar.repository.UserRepo;
 import com.danielqueiroz.fotoradar.model.Role;
 import com.danielqueiroz.fotoradar.model.User;
+import com.danielqueiroz.fotoradar.repository.RoleRepo;
+import com.danielqueiroz.fotoradar.repository.UserRepo;
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
