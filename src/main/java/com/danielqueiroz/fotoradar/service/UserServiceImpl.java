@@ -123,6 +123,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setCpf(userToUpdate.getCpf());
         user.setName(userToUpdate.getName());
         user.setEmail(userToUpdate.getEmail());
+        userRepo.save(user);
     }
 
     public User getUser() {
