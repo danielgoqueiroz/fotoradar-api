@@ -6,18 +6,17 @@
 
 plugins {
     id 'java'
-//    id 'maven-publish'
     id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'com.danielqueiroz.fotoradar.FotoradarApplication'
-    }
-}
+group = 'com.danielqueiroz.fotoradar'
+version = '0.0.1-SNAPSHOT'
+description = 'fotoradar'
+
 
 repositories {
     mavenLocal()
@@ -73,17 +72,13 @@ dependencies {
 
 }
 
-group = 'com.danielqueiroz'
-version = '0.0.1-SNAPSHOT'
-description = 'fotoradar'
 
-
-compileJava {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
+//compileJava {
+//    sourceCompatibility = JavaVersion.VERSION_17
+//    targetCompatibility = JavaVersion.VERSION_17
+//}
+//
+//tasks.withType(JavaCompile) {
+//    options.encoding = 'UTF-8'
+//}
 
