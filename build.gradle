@@ -10,10 +10,14 @@ plugins {
     id 'org.springframework.boot' version '2.7.5'
 }
 
-//springBoot {
-//    mainClassName = 'com.danielqueiroz.fotoradar.FotoradarApplication'
-//}
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.danielqueiroz.fotoradar.FotoradarApplication'
+    }
+}
 
 repositories {
     mavenLocal()
