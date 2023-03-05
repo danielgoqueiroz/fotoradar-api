@@ -6,9 +6,14 @@
 
 plugins {
     id 'java'
-    id 'maven-publish'
+//    id 'maven-publish'
     id 'org.springframework.boot' version '2.7.5'
 }
+
+//springBoot {
+//    mainClassName = 'com.danielqueiroz.fotoradar.FotoradarApplication'
+//}
+
 
 repositories {
     mavenLocal()
@@ -64,11 +69,10 @@ dependencies {
 
 }
 
-
-
 group = 'com.danielqueiroz'
 version = '0.0.1-SNAPSHOT'
 description = 'fotoradar'
+
 
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -78,8 +82,4 @@ compileJava {
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
-
-//tasks.jar {
-//    manifest.attributes["Main-Class"] = "com.danielqueiroz.fotoradar.FotoradarApplication"
-//}
 
