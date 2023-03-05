@@ -78,8 +78,7 @@ public class ProcessSevice {
     }
 
     public Process addPayment(String processId, String value, String date) throws ParseException {
-        Process process = processRepo.findOne(Example.of(Process.builder()
-                .id(processId).build())).get();
+        Process process = processRepo.findById(processId).get();
         process.getPayments().add(Payment.builder()
                 .value(new BigDecimal(value))
                 .date(getDate(date))
@@ -111,7 +110,7 @@ public class ProcessSevice {
     }
 
     public Process getProcess(String id) {
-        return processRepo.findOne(Example.of(Process.builder().id(id).build())).get();
+        return processRepo.findById(id).get();
     }
 
 

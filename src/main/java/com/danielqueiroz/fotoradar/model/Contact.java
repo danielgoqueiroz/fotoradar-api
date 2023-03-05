@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Document
 @Setter
-
 public class Contact {
 
     @Id
