@@ -32,6 +32,15 @@ Ele já passou por alguns reconstruções e modificações, que acompanham a min
 [x]-Editar
 [x]-Remover
 
+# Docker
+
+## Criar imagem
+docker build --tag fotoradar .
+
+## Rodar imagem
+docker run --name fotoradar -p 8080:8080 fotoradar
+
+
 
 # GetStart em DEV
 
