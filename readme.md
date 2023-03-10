@@ -40,7 +40,9 @@ docker build --tag fotoradar .
 ## Rodar imagem
 docker run --name fotoradar -p 8080:8080 fotoradar
 
-
+# Railway
+Start Command
+java -jar build/libs/*.jar --spring.profiles.active=prd -Dloader.main=com.danielqueiroz.fotoradar.FotoradarApplication org.springframework.boot.loader.PropertiesLauncher
 
 # GetStart em DEV
 
