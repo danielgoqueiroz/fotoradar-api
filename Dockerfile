@@ -7,7 +7,7 @@ RUN gradle build
 # stage 2: package into a lightweight image
 FROM openjdk:17-jdk-alpine
 COPY --from=build /home/gradle/src/build/libs/*.jar /app.jar
-EXPOSE 8080
+EXPOSE 0.0.0.0:8080
 ENV ENV=prd
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
