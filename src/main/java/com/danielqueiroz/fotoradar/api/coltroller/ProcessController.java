@@ -14,7 +14,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/process")
-@CrossOrigin(origins = {"http://localhost:3000"})
+@CrossOrigin(origins = {"*"})
 public class ProcessController {
 
     private final ProcessSevice processService;

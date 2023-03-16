@@ -12,7 +12,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/page")
-@CrossOrigin(origins = {"http://localhost:3000"})
+@CrossOrigin(origins = {"*"})
 public class PageController {
 
     private final PageSevice pageService;

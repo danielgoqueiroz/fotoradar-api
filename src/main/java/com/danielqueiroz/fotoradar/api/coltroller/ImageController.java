@@ -13,7 +13,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/api/image")
 @AllArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000"})
+@CrossOrigin(origins = {"*"})
 public class ImageController {
 
     private ImageService imageService;
