@@ -19,6 +19,6 @@ public class CompanyDTO {
     private String phone;
     private String address;
     private String host;
-    private String mail;
+    private String email;
 
 }
