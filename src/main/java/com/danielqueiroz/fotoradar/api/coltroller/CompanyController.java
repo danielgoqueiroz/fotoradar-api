@@ -4,6 +4,7 @@ import com.danielqueiroz.fotoradar.api.model.CompanyDTO;
 import com.danielqueiroz.fotoradar.model.Company;
 import com.danielqueiroz.fotoradar.service.CompanyService;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/company")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
+@Log4j2
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -27,11 +29,13 @@ public class CompanyController {
 
     @GetMapping("/find-by-id")
     public ResponseEntity<Company> getCompany(@RequestParam String id) {
+        log.info("Find company by id: " + id);
         return ok().body(companyService.findCompany(id));
     }
 
     @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Company> updateCompany(@RequestBody CompanyDTO company) {
+        log.info("Update company: " + company);
         return ok().body(companyService.updateCompany(company));
     }
 

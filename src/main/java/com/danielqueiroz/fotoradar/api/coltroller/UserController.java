@@ -9,6 +9,7 @@ import com.danielqueiroz.fotoradar.exception.ValidationException;
 import com.danielqueiroz.fotoradar.model.Role;
 import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.service.UserServiceImpl;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = {"*"})
+@Log4j2
 public class UserController {
 
     private final UserServiceImpl userService;
@@ -38,6 +40,7 @@ public class UserController {
 
     @PostMapping(value = "/save", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveUser(@RequestBody CreateUserDTO user) {
+        log.info("Save user: " + user);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/save").toUriString());
         try {
             return ResponseEntity.created(uri).body(
@@ -61,6 +64,7 @@ public class UserController {
 
     @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUser(@RequestBody UserDTO user) {
+        log.info("Update user: " + user);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
 
@@ -85,12 +89,14 @@ public class UserController {
 
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
+        log.info("Save role: " + role);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
     @PostMapping("/role/add-on-user")
     public ResponseEntity addToUser(@RequestBody RoleToUserFormDTO roleToUserForm) {
+        log.info("Add role to user: " + roleToUserForm);
         userService.addRoleToUser(roleToUserForm.getUsername(), roleToUserForm.getRole());
         return ResponseEntity.ok().build();
     }

@@ -7,6 +7,7 @@ import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.service.UserService;
 import com.danielqueiroz.fotoradar.service.UserServiceImpl;
 import com.google.common.base.Strings;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
-@Slf4j
+@Log4j2
 public class DevController {
 
 	private final UserServiceImpl userService;
@@ -56,7 +57,9 @@ public class DevController {
 	}
 
 	@GetMapping("/status")
-	public ResponseEntity<?> status() throws AlreadyExistException, ValidationException {
+	public ResponseEntity<?> status() {
+		log.info("Verificando status do serviço");
+
 		return ok().body("Service is running");
 	}
 
