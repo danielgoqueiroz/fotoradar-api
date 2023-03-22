@@ -66,12 +66,6 @@ public class PageController {
         return ResponseEntity.ok().build();
     }
 
-//    @PostMapping("/add-image-on-page")
-//    public ResponseEntity<?> addImageOnUsage(@RequestParam String idPage, @RequestParam String idImage) {
-//        pageService.addImageOnPage(idImage, idPage);
-//        return ResponseEntity.ok().build();
-//    }
-
     @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updatePage(@RequestBody Page page) {
         log.info("Update page: " + page);
@@ -85,44 +79,6 @@ public class PageController {
         Page pageUpdated = pageService.updatePageProcess(pageId, processNumber);
         return ResponseEntity.ok(pageUpdated);
     }
-
-
-//    @PostMapping("add-payment")
-//    public ResponseEntity<?> addPayment(@RequestParam String idNotice, @RequestParam String value) {
-//
-//        BigDecimal valueDecimal = BigDecimal.valueOf(Long.valueOf(value));
-//        pageService.addPayment(idNotice, valueDecimal);
-//        return ResponseEntity.ok().build();
-//    }
-
-//    @PostMapping("/links")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<?> saveLinks(@RequestBody List<String> links) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String username =  (String) auth.getPrincipal();
-//
-//        List<Notice> linksProcessed = links.stream().map(link -> {
-//            try {
-//                return noticeService.save(username, link, imageId);
-//            } catch (NoticeException e) {
-//                throw new RuntimeException(e.getMessage());
-//            } catch (MalformedURLException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }).collect(Collectors.toList());
-//
-//        List<Notice> linksIgnored = linksProcessed.stream().filter(l -> Objects.isNull(l)).collect(Collectors.toList());
-//        List<Notice> linksSaved = linksProcessed.stream().filter(l -> Objects.nonNull(l)).collect(Collectors.toList());
-//        if (linksSaved.isEmpty()) {
-//            return ResponseEntity.badRequest().body(
-//                    "Nenhum registro salvo"
-//            );
-//        } else {
-//            return ResponseEntity.ok().body(
-//                    String.format("%s registros ignorados. %s salvos com sucesso",linksIgnored.size(),  linksSaved.size())
-//            );
-//        }
-//    }
 
 }
 

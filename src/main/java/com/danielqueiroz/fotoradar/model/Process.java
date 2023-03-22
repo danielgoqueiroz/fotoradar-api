@@ -3,6 +3,7 @@ package com.danielqueiroz.fotoradar.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -35,5 +36,8 @@ public class Process {
 
     @Builder.Default
     private List<Payment> payments = new ArrayList<>();
+
+    @DBRef
+    private User user;
 
 }

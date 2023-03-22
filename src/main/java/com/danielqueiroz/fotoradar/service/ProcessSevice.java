@@ -110,7 +110,26 @@ public class ProcessSevice {
     }
 
     public Process getProcess(String id) {
-        return processRepo.findById(id).get();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username =  (String) auth.getPrincipal();
+
+        User user = userRepo.findUserByUsername(username);
+
+        Process build = Process.builder()
+                .id(id)
+                .pages(null)
+                .attorney(null)
+                .payments(null)
+                .user(user)
+                .build();
+
+        Example<Process> example = Example.of(
+                build
+        );
+
+
+        Process process = processRepo.findOne(example).get();;
+        return process;
     }
 
 

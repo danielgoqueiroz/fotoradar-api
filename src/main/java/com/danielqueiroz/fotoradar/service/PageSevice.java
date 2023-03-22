@@ -150,6 +150,7 @@ public class PageSevice {
             Process process = processRepo.save(Process.builder()
                     .processNumber(processNumber)
                     .pages(Arrays.asList(page))
+                    .user(page.getImage().getUser())
                     .build());
             page.setProcess(process);
             return pageRepo.save(page);
