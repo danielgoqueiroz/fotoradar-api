@@ -55,6 +55,9 @@ public class PageSevice {
 
         Page pageExample = Page.builder()
                 .id(id)
+                .image(Image.builder()
+                        .user(user)
+                        .build())
                 .build();
         return pageRepo.findOne(Example.of(pageExample)).get();
     }
@@ -73,6 +76,9 @@ public class PageSevice {
 
         Page pageExample = Page.builder()
                 .image(image)
+                .company(Company.builder()
+                        .user(user)
+                        .build())
                 .build();
         List<Page> pages = pageRepo.findAll(Example.of(pageExample));
         return pages;
@@ -81,10 +87,10 @@ public class PageSevice {
     public void addImageOnPageWithUrl(String imageId, String url) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
-
+        User user = userRepo.findUserByUsername(username);
         Image image = imageRepo.findImageById(imageId);
 
-        Company company = getCompany(url);
+        Company company = getCompany(url, user);
 
         pageRepo.findOne(Example.of(Page.builder().url(url).build()))
                 .ifPresentOrElse(page -> {
@@ -100,8 +106,9 @@ public class PageSevice {
                 });
     }
 
-    private Company getCompany(String url) {
+    private Company getCompany(String url, User user) {
         Optional<Company> companyOptional = companyRepo.findOne(Example.of(Company.builder()
+                .user(User.builder().id(user.getId()).build())
                 .host(getHost(url))
                 .build()));
 
@@ -110,6 +117,7 @@ public class PageSevice {
         } else {
             Company company = Company.builder()
                     .host(getHost(url))
+                    .user(user)
                     .build();
             companyRepo.save(company);
             return company;

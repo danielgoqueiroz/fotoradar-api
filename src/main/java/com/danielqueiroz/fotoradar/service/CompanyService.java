@@ -2,9 +2,13 @@ package com.danielqueiroz.fotoradar.service;
 
 import com.danielqueiroz.fotoradar.api.model.CompanyDTO;
 import com.danielqueiroz.fotoradar.model.Company;
+import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.repository.CompanyRepo;
+import com.danielqueiroz.fotoradar.repository.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +20,22 @@ import java.util.List;
 public class CompanyService {
 
     private final CompanyRepo companyRepo;
+    private final UserRepo userRepo;
 
-    public CompanyService(CompanyRepo companyRepo) {
+    public CompanyService(CompanyRepo companyRepo, UserRepo userRepo) {
         this.companyRepo = companyRepo;
+        this.userRepo = userRepo;
     }
 
     public List<Company> findCompanies() {
-        List<Company> companies = companyRepo.findAll();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userRepo.findUserByUsername(username);
+
+        List<Company> companies = companyRepo.findAll(Example.of(
+                Company.builder()
+                        .user(user)
+                        .build()));
         return companies;
     }
 

@@ -39,11 +39,11 @@ public class ImageService {
 
         boolean hasImage = !Objects.isNull(imageRepo.findImageByLink(link));
         if (hasImage) {
-            throw new AlreadyExistException("Imagem já salva") ;
+            throw new AlreadyExistException("Imagem já salva");
         }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username =  (String) auth.getPrincipal();
+        String username = (String) auth.getPrincipal();
         User user = userService.getUser(username);
 
         StringBuffer content = new StringBuffer();
@@ -66,7 +66,10 @@ public class ImageService {
 
     public Image findImageByLink(String link) {
         return imageRepo.findImageByLink(link);
-    };
+    }
+
+    ;
+
     private void getImage(String link, StringBuffer content) throws IOException {
         URL url = new URL(link);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -84,7 +87,7 @@ public class ImageService {
 
     public List<Image> findAll() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username =  (String) auth.getPrincipal();
+        String username = (String) auth.getPrincipal();
         User user = userService.getUser(username);
 
         return imageRepo.findImagesByUser(user);
@@ -95,7 +98,15 @@ public class ImageService {
     }
 
     public Image findImage(String id) {
-        return imageRepo.findOne(Example.of(Image.builder().id(id).build()))
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userService.getUser(username);
+
+        Example<Image> example = Example.of(Image.builder()
+                .id(id)
+                .user(user)
+                .build());
+        return imageRepo.findOne(example)
                 .orElseThrow(() -> new RuntimeException("Imagem não encontrada"));
     }
 }
