@@ -1,4 +1,4 @@
-package com.danielqueiroz.fotoradar.model;
+package com.danielqueiroz.fotoradar.model.constants;
 
 public enum Status {
 
