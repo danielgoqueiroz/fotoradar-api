@@ -47,11 +47,11 @@ public class ProcessSevice {
 
     private final MongoTemplate mongoTemplate;
 
+    private final UserService userService;
+
     public List<Process> getProcesses() {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = (String) auth.getPrincipal();
-        User user = userRepo.findUserByUsername(username);
+        User user = userService.getCurrentUser();
 
         MongoCollection<Document> collection = mongoTemplate.getCollection(mongoTemplate.getCollectionName(Process.class));
 
@@ -78,6 +78,9 @@ public class ProcessSevice {
     }
 
     public Process addPayment(String processId, String value, String date) throws ParseException {
+
+        User user = userService.getCurrentUser();
+
         Process process = processRepo.findById(processId).get();
         process.getPayments().add(Payment.builder()
                 .value(new BigDecimal(value))
@@ -98,7 +101,13 @@ public class ProcessSevice {
     }
 
     public Process updateProcessNumber(String id, String processNumber) {
-        Optional<Process> processOpt = processRepo.findOne(Example.of(Process.builder().id(id).build()));
+
+        User user = userService.getCurrentUser();
+
+        Optional<Process> processOpt = processRepo.findOne(Example.of(Process.builder()
+                .user(user)
+                .id(id)
+                .build()));
         if (processOpt.isPresent()) {
             Process process = processOpt.get();
             process.setProcessNumber(processNumber);
@@ -110,10 +119,7 @@ public class ProcessSevice {
     }
 
     public Process getProcess(String id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username =  (String) auth.getPrincipal();
-
-        User user = userRepo.findUserByUsername(username);
+        User user = userService.getCurrentUser();
 
         Process build = Process.builder()
                 .id(id)
@@ -126,75 +132,8 @@ public class ProcessSevice {
         Example<Process> example = Example.of(
                 build
         );
-
-
-        Process process = processRepo.findOne(example).get();;
+        Process process = processRepo.findOne(example).get();
         return process;
     }
 
-
-//    public Page getPageById(String id) {
-//        return pageRepo.findPageById(id);
-//    }
-//
-//    public Page save(String username, String url, String imageId) throws NoticeException, MalformedURLException {
-//        String hash = getHash(url);
-//
-//        String host = new URL(url).getHost();
-//        Company company = companyRepo.findFirstCompanyByHost(host);
-//        if (company == null) {
-//            company = Company.builder()
-//                    .host(host)
-//                    .build();
-//            companyRepo.save(company);
-//        }
-//        User user = userRepo.findUserByUsername(username);
-//        Image image = imageRepo.findImageById(imageId);
-//
-//        Page page = Page.builder()
-//                .url(url)
-//                .image(image)
-//                .company(company)
-//                .build();
-//
-//        Page pageSaved = pageRepo.save(page);
-//        return pageSaved;
-//    }
-//
-
-//
-//    public Page updatePage(Page page) {
-//        Page pageToUpdate = pageRepo.findPageById(page.getId());
-//        pageToUpdate.setCompany(page.getCompany());
-//        pageToUpdate.setUrl(page.getUrl());
-////        noticeToUpdate.setProcessNumber(notice.getProcessNumber());
-//        return pageToUpdate;
-//    }
-//
-//    public Page updatePageProcess(String noticeId, String processNumber) {
-//        Page pageToUpdate = pageRepo.findPageById(noticeId);
-////        if(pageToUpdate.getProcess() == null) {
-////            Process process = Process.builder()
-////                    .processNumber(processNumber).build();
-////            Process processByProcessNumber = processRepo.findProcessByProcessNumber(processNumber);
-////            if (processByProcessNumber == null) {
-////                Process processSaved = processRepo.save(process);
-////                pageToUpdate.setProcess(processSaved);
-////            }
-////
-////        };
-//
-//        return pageToUpdate;
-//    }
-
-
-//    public void addPayment(String pageId, BigDecimal value) {
-//        Page page = pageRepo.findPageById(pageId);
-//        Process process = processRepo.findProcessByPageId(pageId);
-//        Payment payment = Payment.builder()
-//                .date(new Date())
-//                .value(value)
-//                .build();
-//        paymentRepo.save(payment);
-//    }
 }

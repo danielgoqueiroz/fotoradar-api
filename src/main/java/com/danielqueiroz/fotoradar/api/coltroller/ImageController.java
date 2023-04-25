@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -20,7 +21,7 @@ public class ImageController {
 
     private ImageService imageService;
 
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("")
     public ResponseEntity<?> findImages()
     {
@@ -39,7 +40,7 @@ public class ImageController {
     public ResponseEntity<?> saveImage(@RequestBody ImageDTO image) {
         log.info("Save image: " + image);
         try {
-            return ok().body(imageService.save(image.getLink(), image.getName()));
+            return ok().body(imageService.saveImage(image.getLink(), image.getName()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
                     ErrorMessage.builder()

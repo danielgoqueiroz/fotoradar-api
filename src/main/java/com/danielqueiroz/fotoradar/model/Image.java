@@ -21,13 +21,14 @@ public class Image {
 
     @Id
     private String id;
+    @DBRef
+    private User user;
     private String name;
     private String description;
     private Date date;
     private String link;
 
-    @DBRef
-    private User user;
+
 
     @JsonIgnore
     private String blob;

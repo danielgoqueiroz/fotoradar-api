@@ -1,15 +1,13 @@
 package com.danielqueiroz.fotoradar.service;
 
-import com.danielqueiroz.fotoradar.api.model.ImageDTO;
-import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
 import com.danielqueiroz.fotoradar.model.Image;
 import com.danielqueiroz.fotoradar.model.Page;
+import com.danielqueiroz.fotoradar.model.PageResponseDTO;
 import com.danielqueiroz.fotoradar.model.User;
 import com.danielqueiroz.fotoradar.repository.ImageRepo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,9 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Transactional
 @Slf4j
@@ -34,34 +30,59 @@ public class ImageService {
 
     private ImageRepo imageRepo;
     private UserService userService;
+    private PageService pageService;
+    private ImageSearchService imageSearchService;
 
-    public Image save(String link, String name) throws Exception {
+    public Image saveImage(String imageUrl, String name) throws Exception {
 
-        boolean hasImage = !Objects.isNull(imageRepo.findImageByLink(link));
-        if (hasImage) {
-            throw new AlreadyExistException("Imagem já salva");
-        }
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = (String) auth.getPrincipal();
-        User user = userService.getUser(username);
-
-        StringBuffer content = new StringBuffer();
-        try {
-            getImage(link, content);
-        } catch (MalformedURLException | ProtocolException e) {
-            throw new Exception("Não foi possível carregar a imagem. Motivo: " + e.getMessage());
-        }
-
-        String encodedString = Base64.getEncoder().encodeToString(content.toString().getBytes());
-
-        Image image = Image.builder()
-                .blob(encodedString)
-                .name(name)
-                .link(link)
-                .user(user)
+        Image imageExample = Image.builder()
+                .link(imageUrl)
+                .user(userService.getCurrentUser())
                 .build();
-        return imageRepo.save(image);
+        Optional<Image> imageOpt = imageRepo.findOne(Example.of(imageExample));
+        Image image = null;
+        if (imageOpt.isEmpty()) {
+            StringBuffer content = new StringBuffer();
+            try {
+                getImage(imageUrl, content);
+            } catch (MalformedURLException | ProtocolException e) {
+                throw new Exception("Não foi possível carregar a imagem. Motivo: " + e.getMessage());
+            }
+
+            String encodedString = Base64.getEncoder().encodeToString(content.toString().getBytes());
+            image = Image.builder()
+                    .blob(encodedString)
+                    .name(name)
+                    .link(imageUrl)
+                    .user(userService.getCurrentUser())
+                    .build();
+
+            image = imageRepo.save(image);
+        } else {
+            image = imageOpt.get();
+        }
+
+        Set<PageResponseDTO> pages = getPageResponseDTOS(imageUrl);
+
+        for (PageResponseDTO pageResponseDTO : pages) {
+            Page page = pageService.addImageOnPageByResponseDTO(image, pageResponseDTO);
+            log.info("Página adicionada: " + page);
+        }
+
+        return image;
+    }
+
+    private Set<PageResponseDTO> getPageResponseDTOS(String link) {
+        Set<PageResponseDTO> pages = new HashSet<>();
+        try {
+            List<PageResponseDTO> bingResult = imageSearchService.bingSearch(link);
+            pages.addAll(bingResult);
+            List<PageResponseDTO> googleResult = imageSearchService.googleSearch(link);
+            pages.addAll(googleResult);
+        } catch (Exception e) {
+            log.error("Não foi possível carregar a imagem. Motivo: " + e.getMessage());
+        }
+        return pages;
     }
 
     public Image findImageByLink(String link) {
@@ -98,9 +119,7 @@ public class ImageService {
     }
 
     public Image findImage(String id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = (String) auth.getPrincipal();
-        User user = userService.getUser(username);
+        User user = userService.getCurrentUser();
 
         Example<Image> example = Example.of(Image.builder()
                 .id(id)

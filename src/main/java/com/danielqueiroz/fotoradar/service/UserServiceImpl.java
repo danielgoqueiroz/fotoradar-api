@@ -72,6 +72,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return null;
+        }
+        return getUser(authentication.getName());
+    }
+
     @Override
     public Role saveRole(Role role) {
         Role roleOnDatabase = roleRepo.findRoleByName(role.getName());
@@ -95,12 +103,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("Buscando usuário {}", username );
         User user = userRepo.findUserByUsername(username);
         return user;
-    }
-
-    @Override
-    public List<User> getUsers() {
-        log.info("Buscando usuários");
-        return userRepo.findAll();
     }
 
     @Override

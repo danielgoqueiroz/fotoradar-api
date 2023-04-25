@@ -27,7 +27,4 @@ public class Contact {
     private String zipCode;
     private String country;
 
-    @DBRef
-    private Company company;
-
 }
