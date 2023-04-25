@@ -1,7 +1,7 @@
 package com.danielqueiroz.fotoradar.api.coltroller;
 
 import com.danielqueiroz.fotoradar.model.Page;
-import com.danielqueiroz.fotoradar.service.PageSevice;
+import com.danielqueiroz.fotoradar.service.PageService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +17,9 @@ import static org.springframework.http.ResponseEntity.ok;
 @Log4j2
 public class PageController {
 
-    private final PageSevice pageService;
+    private final PageService pageService;
 
-    public PageController(PageSevice pageService) {
+    public PageController(PageService pageService) {
         this.pageService = pageService;
     }
 

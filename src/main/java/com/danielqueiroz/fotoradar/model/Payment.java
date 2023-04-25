@@ -20,6 +20,8 @@ public class Payment {
 
     @Id
     private String id;
+    @DBRef
+    private User user;
     private Date date;
     private BigDecimal value;
 

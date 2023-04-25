@@ -21,6 +21,9 @@ public class Page {
     @Id
     private String id;
 
+    @DBRef
+    private User user;
+
     private String url;
 
     private Image image;

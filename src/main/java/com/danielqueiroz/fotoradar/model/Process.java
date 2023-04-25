@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.model;
 
+import com.danielqueiroz.fotoradar.model.constants.Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -21,6 +22,9 @@ public class Process {
     @Id
     private String id;
 
+    @DBRef
+    private User user;
+
     private String processNumber;
     private Date createdAt;
     private String description;
@@ -36,8 +40,5 @@ public class Process {
 
     @Builder.Default
     private List<Payment> payments = new ArrayList<>();
-
-    @DBRef
-    private User user;
 
 }
