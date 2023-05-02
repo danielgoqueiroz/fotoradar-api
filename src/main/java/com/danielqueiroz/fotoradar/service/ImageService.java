@@ -40,7 +40,20 @@ public class ImageService {
                 .user(userService.getCurrentUser())
                 .build();
         Optional<Image> imageOpt = imageRepo.findOne(Example.of(imageExample));
-        Image image = null;
+        Image image = getImage(imageUrl, name, imageOpt);
+
+        Set<PageResponseDTO> pages = getPageResponseDTOS(imageUrl);
+
+        for (PageResponseDTO pageResponseDTO : pages) {
+            Page page = pageService.addImageOnPageByResponseDTO(image, pageResponseDTO);
+            log.info("Página adicionada: " + page);
+        }
+
+        return image;
+    }
+
+    private Image getImage(String imageUrl, String name, Optional<Image> imageOpt) throws Exception {
+        Image image;
         if (imageOpt.isEmpty()) {
             StringBuffer content = new StringBuffer();
             try {
@@ -61,14 +74,6 @@ public class ImageService {
         } else {
             image = imageOpt.get();
         }
-
-        Set<PageResponseDTO> pages = getPageResponseDTOS(imageUrl);
-
-        for (PageResponseDTO pageResponseDTO : pages) {
-            Page page = pageService.addImageOnPageByResponseDTO(image, pageResponseDTO);
-            log.info("Página adicionada: " + page);
-        }
-
         return image;
     }
 

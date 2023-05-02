@@ -1,21 +1,18 @@
 package com.danielqueiroz.fotoradar.service;
 
 import com.danielqueiroz.fotoradar.exception.NoticeException;
-import com.danielqueiroz.fotoradar.model.*;
 import com.danielqueiroz.fotoradar.model.Process;
+import com.danielqueiroz.fotoradar.model.*;
 import com.danielqueiroz.fotoradar.repository.*;
-import com.danielqueiroz.fotoradar.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-
-import static com.danielqueiroz.fotoradar.utils.Utils.getHost;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Slf4j
@@ -100,29 +97,25 @@ public class PageService {
     }
 
 
-
-
-
     public Page addImageOnPageByResponseDTO(Image image, PageResponseDTO responseDTO) {
 
         Optional<Page> optional = pageRepo.findOne(Example.of(Page.builder()
+                .image(image)
                 .user(userService.getCurrentUser())
-                .url(getHost(responseDTO.getPageLink()))
+                .url(responseDTO.getPageLink())
                 .build()));
 
-        Page page;
         if (optional.isEmpty()) {
-            page = Page.builder()
+            Page page = Page.builder()
                     .image(image)
                     .company(companyService.findCompanyByUrl(responseDTO.getPageLink()))
                     .user(userService.getCurrentUser())
                     .url(responseDTO.getPageLink())
                     .build();
-        } else {
-            page = optional.get();
-            page.setImage(image);
+            return pageRepo.save(page);
         }
-        return pageRepo.save(page);
+
+        return optional.get();
     }
 
     public Page addImageOnPage(Image image, String idPage) {

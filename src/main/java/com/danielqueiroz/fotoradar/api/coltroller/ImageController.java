@@ -21,7 +21,7 @@ public class ImageController {
 
     private ImageService imageService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("")
     public ResponseEntity<?> findImages()
     {
@@ -29,13 +29,14 @@ public class ImageController {
         return ok().body(imageService.findAll());
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/find-by-id")
     public ResponseEntity<?> findImage(@RequestParam String id) {
         log.info("Find image by id: " + id);
         return ok().body(imageService.findImage(id));
     }
 
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping(value = "" , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveImage(@RequestBody ImageDTO image) {
         log.info("Save image: " + image);
