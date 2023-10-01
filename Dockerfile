@@ -9,7 +9,7 @@ FROM openjdk:17-jdk-alpine
 COPY --from=build /home/gradle/src/build/libs/*.jar /app.jar
 EXPOSE 8080
 ENV ENV=prd
-ENTRYPOINT ["java", "-jar", "/app.jar" , "--host", "0.0.0.0" ]
+ENTRYPOINT ["java", "-jar", "/app.jar" , "--server.address=0.0.0.0" ]
 
 #COPY ./build/libs/*.jar ./app.jar
 #ENTRYPOINT ["java", "-jar", "/app.jar", "--spring.profiles.active=prd" ]
