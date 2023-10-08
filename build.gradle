@@ -11,6 +11,10 @@ plugins {
     id 'application'
 }
 
+ext {
+    springBootVersion = '2.7.9'
+}
+
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 
@@ -35,16 +39,18 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter:2.7.9'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.9'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc:2.7.9'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.7.9'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.9'
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.7.9'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.9'
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.7.9'
+    implementation "org.springframework.boot:spring-boot-starter:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jdbc:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}"
+    runtimeOnly "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
 
-    runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.7.9'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:4.9.2'
 
     implementation 'com.auth0:java-jwt:3.19.1'
     implementation 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
@@ -53,21 +59,20 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
-    implementation 'org.springframework.security:spring-security-web:5.3.13.RELEASE'
+    implementation 'org.springframework.security:spring-security-web:5.7.7'
     implementation 'org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.13.RELEASE'
 
     implementation 'com.google.guava:guava:31.1-jre'
 
-//    implementation 'org.springframework:spring-webflux:5.3.21'
-
     implementation 'com.google.code.gson:gson:2.10'
     implementation 'commons-net:commons-net:3.9.0'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
+
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
 
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.5'
 
@@ -85,5 +90,12 @@ application {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
