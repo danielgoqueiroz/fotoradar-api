@@ -16,14 +16,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.danielqueiroz.fotoradar.contants.Const.BEARER;
-import static com.danielqueiroz.fotoradar.contants.Const.ROLES;
 import static com.danielqueiroz.fotoradar.conf.PropertiesLoader.getSecret;
+import static com.danielqueiroz.fotoradar.contants.Const.BEARER;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Configuration

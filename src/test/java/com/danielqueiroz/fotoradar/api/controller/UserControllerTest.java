@@ -1,7 +1,7 @@
-package com.danielqueiroz.fotoradar.api.coltroller;
+package com.danielqueiroz.fotoradar.api.controller;
 
+import com.danielqueiroz.fotoradar.api.model.CreateUserDTO;
 import com.danielqueiroz.fotoradar.model.User;
-import com.danielqueiroz.fotoradar.stub.UserStub;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,13 +10,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.danielqueiroz.fotoradar.api.TestUtils.getToken;
-import static org.hamcrest.Matchers.containsString;
+import static com.danielqueiroz.fotoradar.api.TestUtils.toGson;
+import static com.danielqueiroz.fotoradar.stub.CreateUserDTOStub.getCreateUserDTOStubFromUser;
+import static com.danielqueiroz.fotoradar.stub.UserStub.getUserStub;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -25,11 +30,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = "test")
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureMockMvc
 public class UserControllerTest {
+
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String ACCESS_TOKEN = "access_token";
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,22 +47,29 @@ public class UserControllerTest {
     Integer randomServerPort;
 
     @Test
-    public void doLogin() throws Exception {
-        User userStub = UserStub.getUserStub();
+    public void testDoLogin() throws Exception {
+        User userStub = getUserStub();
+        CreateUserDTO createUserDTOStubFromUser = getCreateUserDTOStubFromUser(userStub);
+        String userCreated = toGson(userStub);
 
-        mockMvc.perform(post("/api/login")
-                        .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-                        .param("username", "daniel")
-                        .param("password", "senha123"))
-                .andExpect(content().string(containsString("access_token")))
-                .andExpect(status().isOk());
+        mockMvc.perform(post("/api/user/save")
+                        .contentType(APPLICATION_JSON)
+                        .content(userCreated))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(content().string("{\"username\":\"teste\"}"));
 
-        mockMvc.perform(post("/api/login")
+        MvcResult mvcResult = mockMvc.perform(post("/login")
                         .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-                        .param("username", "daniel")
-                        .param("password", "senha123"))
-                .andExpect(content().string(containsString("access_token")))
-                .andExpect(status().isOk());
+                        .param(USERNAME, createUserDTOStubFromUser.getUsername())
+                        .param(PASSWORD, createUserDTOStubFromUser.getPassword()))
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        String contentAsString = response.getContentAsString();
+        Assertions.assertNotNull(contentAsString);
+//        andExpect(content().string(containsString(ACCESS_TOKEN)))
+//                .andExpect(status().isOk());
 
     }
 

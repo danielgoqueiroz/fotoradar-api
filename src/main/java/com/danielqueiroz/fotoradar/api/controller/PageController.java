@@ -1,4 +1,4 @@
-package com.danielqueiroz.fotoradar.api.coltroller;
+package com.danielqueiroz.fotoradar.api.controller;
 
 import com.danielqueiroz.fotoradar.model.Page;
 import com.danielqueiroz.fotoradar.service.PageService;

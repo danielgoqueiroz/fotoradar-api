@@ -1,6 +1,7 @@
 package com.danielqueiroz.fotoradar.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -9,12 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Collection;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Document
 @Setter
+//@JsonInclude(NON_NULL)
 public class User {
 
     @Id

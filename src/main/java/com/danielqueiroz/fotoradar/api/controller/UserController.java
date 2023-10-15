@@ -1,4 +1,4 @@
-package com.danielqueiroz.fotoradar.api.coltroller;
+package com.danielqueiroz.fotoradar.api.controller;
 
 import com.danielqueiroz.fotoradar.api.model.CreateUserDTO;
 import com.danielqueiroz.fotoradar.api.model.ErrorMessage;
@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.Collections;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 @RestController
 @RequestMapping("/api/user")
@@ -41,7 +42,7 @@ public class UserController {
     @PostMapping(value = "/save", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveUser(@RequestBody CreateUserDTO user) {
         log.info("Save user: " + user);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/save").toUriString());
+        URI uri = URI.create(fromCurrentContextPath().path("/user/save").toUriString());
         try {
             return ResponseEntity.created(uri).body(
                     userService.saveUser(
@@ -90,7 +91,7 @@ public class UserController {
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
         log.info("Save role: " + role);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
+        URI uri = URI.create(fromCurrentContextPath().path("/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 

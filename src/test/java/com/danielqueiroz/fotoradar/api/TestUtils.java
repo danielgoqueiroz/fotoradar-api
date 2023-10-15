@@ -2,6 +2,7 @@ package com.danielqueiroz.fotoradar.api;
 
 import com.danielqueiroz.fotoradar.contants.Const;
 import com.danielqueiroz.fotoradar.model.User;
+import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -11,6 +12,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import static com.danielqueiroz.fotoradar.contants.Const.BEARER;
+import static java.lang.String.valueOf;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
@@ -47,6 +49,10 @@ public class TestUtils {
     }
 
     public static byte[] toJson(User user) throws JSONException {
-        return new JSONObject(String.valueOf(user)).toString().getBytes();
+        return new JSONObject(valueOf(user)).toString().getBytes();
+    }
+
+    public static String toGson(Object object) {
+        return new Gson().toJson(object);
     }
 }

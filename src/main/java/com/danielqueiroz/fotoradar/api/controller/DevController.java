@@ -1,22 +1,17 @@
-package com.danielqueiroz.fotoradar.api.coltroller;
+package com.danielqueiroz.fotoradar.api.controller;
 
 import com.danielqueiroz.fotoradar.exception.AlreadyExistException;
 import com.danielqueiroz.fotoradar.exception.ValidationException;
 import com.danielqueiroz.fotoradar.model.Role;
 import com.danielqueiroz.fotoradar.model.User;
-import com.danielqueiroz.fotoradar.service.UserService;
 import com.danielqueiroz.fotoradar.service.UserServiceImpl;
-import com.google.common.base.Strings;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 

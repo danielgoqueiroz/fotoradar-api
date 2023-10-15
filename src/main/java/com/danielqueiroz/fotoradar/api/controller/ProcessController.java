@@ -1,14 +1,11 @@
-package com.danielqueiroz.fotoradar.api.coltroller;
+package com.danielqueiroz.fotoradar.api.controller;
 
 import com.danielqueiroz.fotoradar.model.Process;
 import com.danielqueiroz.fotoradar.service.ProcessSevice;
 import lombok.extern.log4j.Log4j2;
-import org.apache.tomcat.jni.Proc;
-import org.bson.Document;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;

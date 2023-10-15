@@ -34,6 +34,6 @@ public class Page {
     @DBRef
     private Process process;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
 }

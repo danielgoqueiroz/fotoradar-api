@@ -9,11 +9,13 @@ import org.bson.Document;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 public class PagesConvertor {
 
 
     public static List<Page> convertPagesBsonListToPOJO(String processNumber, List pagesJson) {
-         List<Page> pages = (List<Page>) pagesJson.stream().map(page -> {
+        return (List<Page>) pagesJson.stream().map(page -> {
             Document pageJson = (Document) page;
             return Page.builder()
                     .id(pageJson.getObjectId("_id").toString())
@@ -22,8 +24,6 @@ public class PagesConvertor {
                     .process(Process.builder().processNumber(processNumber).build())
                     .company(Company.builder().build())
                     .build();
-        }).collect(Collectors.toList());
-
-         return pages;
+        }).collect(toList());
     }
 }
