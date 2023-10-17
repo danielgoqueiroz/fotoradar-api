@@ -2,6 +2,7 @@ package com.danielqueiroz.fotoradar.api.controller;
 
 import com.danielqueiroz.fotoradar.api.model.CreateUserDTO;
 import com.danielqueiroz.fotoradar.model.User;
+import org.hamcrest.core.StringContains;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,17 +11,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.danielqueiroz.fotoradar.api.TestUtils.getToken;
 import static com.danielqueiroz.fotoradar.api.TestUtils.toGson;
 import static com.danielqueiroz.fotoradar.stub.CreateUserDTOStub.getCreateUserDTOStubFromUser;
 import static com.danielqueiroz.fotoradar.stub.UserStub.getUserStub;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
@@ -48,6 +48,7 @@ public class UserControllerTest {
 
     @Test
     public void testDoLogin() throws Exception {
+
         User userStub = getUserStub();
         CreateUserDTO createUserDTOStubFromUser = getCreateUserDTOStubFromUser(userStub);
         String userCreated = toGson(userStub);
@@ -58,18 +59,14 @@ public class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string("{\"username\":\"teste\"}"));
+                .andExpect(content().string("{\"name\":null,\"username\":\"teste\",\"email\":null,\"cpf\":null,\"images\":null}"));
 
-        MvcResult mvcResult = mockMvc.perform(post("/login")
+        mockMvc.perform(post("/login")
                         .contentType(APPLICATION_FORM_URLENCODED_VALUE)
                         .param(USERNAME, createUserDTOStubFromUser.getUsername())
                         .param(PASSWORD, createUserDTOStubFromUser.getPassword()))
-                .andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-        String contentAsString = response.getContentAsString();
-        Assertions.assertNotNull(contentAsString);
-//        andExpect(content().string(containsString(ACCESS_TOKEN)))
-//                .andExpect(status().isOk());
+                .andExpect(content().string(StringContains.containsString(ACCESS_TOKEN)))
+                .andExpect(status().isOk());
 
     }
 
@@ -117,7 +114,7 @@ public class UserControllerTest {
     @Test
     public void getTokenValue() throws JSONException {
         String token = getToken(randomServerPort);
-        Assertions.assertNotNull(token);
+        assertNotNull(token);
         Assertions.assertTrue(token != null);
         Assertions.assertEquals(203, token.length());
     }
