@@ -52,6 +52,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}"
     runtimeOnly "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
     implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    testImplementation 'org.springframework.security:spring-security-test'
+
 
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:4.9.2'
 
@@ -91,11 +94,11 @@ application {
 }
 
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
     testLogging {
         events("passed", "skipped", "failed")

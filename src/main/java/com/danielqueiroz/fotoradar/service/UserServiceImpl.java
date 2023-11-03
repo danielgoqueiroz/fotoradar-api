@@ -19,10 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,8 +98,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getUser(String username) {
         log.info("Buscando usuário {}", username );
-        User user = userRepo.findUserByUsername(username);
-        return user;
+        return userRepo.findUserByUsername(username);
     }
 
     @Override
@@ -121,13 +117,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void updateUser(User userToUpdate) throws ValidationException, AlreadyExistException {
+    public User updateUser(User userToUpdate) throws ValidationException, AlreadyExistException {
         User user = userRepo.findUserByUsername(userToUpdate.getUsername());
+        if (user == null) {
+            return null;
+        }
         user.setUsername(userToUpdate.getUsername());
         user.setCpf(userToUpdate.getCpf());
         user.setName(userToUpdate.getName());
         user.setEmail(userToUpdate.getEmail());
-        userRepo.save(user);
+        return userRepo.save(user);
     }
 
     public User getUser() {

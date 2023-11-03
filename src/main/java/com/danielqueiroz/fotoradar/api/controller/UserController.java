@@ -12,14 +12,14 @@ import com.danielqueiroz.fotoradar.service.UserServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collections;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.badRequest;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 @RestController
@@ -59,33 +59,32 @@ public class UserController {
             );
         } catch (AlreadyExistException | ValidationException e) {
             String message = e.getMessage();
-            return ResponseEntity.badRequest().body(new ErrorMessage(this.getClass().getName(), message));
+            return badRequest().body(new ErrorMessage(this.getClass().getName(), message));
         }
     }
 
-    @PutMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUser(@RequestBody UserDTO user) {
         log.info("Update user: " + user);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = (String) auth.getPrincipal();
+        Authentication auth = getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User userPrincipal =
+                (org.springframework.security.core.userdetails.User) auth.getPrincipal();
 
         try {
-            userService.updateUser(
-                    User
-                            .builder()
-                            .username(username)
-                            .password(user.getPassword())
-                            .name(user.getName())
-                            .cpf(user.getCpf())
-                            .email(user.getEmail())
-                            .build()
-            );
+            User userToUpdate = User.builder()
+                    .username(userPrincipal.getUsername())
+                    .password(user.getPassword())
+                    .name(user.getName())
+                    .cpf(user.getCpf())
+                    .email(user.getEmail())
+                    .build();
+            User userUpdated = userService.updateUser(userToUpdate);
+            return ResponseEntity.accepted().body(userUpdated);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(ErrorMessage.builder().message(e.getMessage()));
         } catch (AlreadyExistException e) {
             return ResponseEntity.badRequest().body(ErrorMessage.builder().message(e.getMessage()));
         }
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/role/save")
@@ -96,7 +95,7 @@ public class UserController {
     }
 
     @PostMapping("/role/add-on-user")
-    public ResponseEntity addToUser(@RequestBody RoleToUserFormDTO roleToUserForm) {
+    public ResponseEntity<?> addToUser(@RequestBody RoleToUserFormDTO roleToUserForm) {
         log.info("Add role to user: " + roleToUserForm);
         userService.addRoleToUser(roleToUserForm.getUsername(), roleToUserForm.getRole());
         return ResponseEntity.ok().build();
