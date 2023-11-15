@@ -1,5 +1,6 @@
 package com.danielqueiroz.fotoradar.service;
 
+import com.danielqueiroz.fotoradar.exception.ImageExceptions;
 import com.danielqueiroz.fotoradar.model.Image;
 import com.danielqueiroz.fotoradar.model.Page;
 import com.danielqueiroz.fotoradar.model.PageResponseDTO;
@@ -13,14 +14,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
-import java.net.URL;
-import java.util.*;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static java.util.Base64.getEncoder;
+import static org.springframework.data.domain.Example.of;
 
 @Transactional
 @Slf4j
@@ -34,47 +41,38 @@ public class ImageService {
     private ImageSearchService imageSearchService;
 
     public Image saveImage(String imageUrl, String name) throws Exception {
-
+        User currentUser = userService.getCurrentUser();
         Image imageExample = Image.builder()
                 .link(imageUrl)
-                .user(userService.getCurrentUser())
+                .user(currentUser)
                 .build();
-        Optional<Image> imageOpt = imageRepo.findOne(Example.of(imageExample));
-        Image image = getImage(imageUrl, name, imageOpt);
+        Optional<Image> imageOpt = imageRepo.findOne(of(imageExample));
 
+        if (imageOpt.isEmpty()) {
+            try {
+                byte[] imageContent = getImageBytes(imageUrl);
+                String encodedString = getEncoder().encodeToString(imageContent);
+                Image image = Image.builder()
+                        .blob(encodedString)
+                        .name(name)
+                        .link(imageUrl)
+                        .user(currentUser)
+                        .build();
+                return imageRepo.save(image);
+            } catch (MalformedURLException | ProtocolException e) {
+                throw new Exception("Não foi possível carregar a imagem. Motivo: " + e.getMessage());
+            }
+        } else {
+            return imageOpt.get();
+        }
+    }
+
+    private void addPagePagesUsage(String imageUrl, Image image) {
         Set<PageResponseDTO> pages = getPageResponseDTOS(imageUrl);
-
         for (PageResponseDTO pageResponseDTO : pages) {
             Page page = pageService.addImageOnPageByResponseDTO(image, pageResponseDTO);
             log.info("Página adicionada: " + page);
         }
-
-        return image;
-    }
-
-    private Image getImage(String imageUrl, String name, Optional<Image> imageOpt) throws Exception {
-        Image image;
-        if (imageOpt.isEmpty()) {
-            StringBuffer content = new StringBuffer();
-            try {
-                getImage(imageUrl, content);
-            } catch (MalformedURLException | ProtocolException e) {
-                throw new Exception("Não foi possível carregar a imagem. Motivo: " + e.getMessage());
-            }
-
-            String encodedString = Base64.getEncoder().encodeToString(content.toString().getBytes());
-            image = Image.builder()
-                    .blob(encodedString)
-                    .name(name)
-                    .link(imageUrl)
-                    .user(userService.getCurrentUser())
-                    .build();
-
-            image = imageRepo.save(image);
-        } else {
-            image = imageOpt.get();
-        }
-        return image;
     }
 
     private Set<PageResponseDTO> getPageResponseDTOS(String link) {
@@ -96,19 +94,25 @@ public class ImageService {
 
     ;
 
-    private void getImage(String link, StringBuffer content) throws IOException {
-        URL url = new URL(link);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
+    private byte[] getImageBytes(String link) throws IOException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(link))
+                .build();
 
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        try {
+            HttpResponse<byte[]> response  = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() == 200) {
+                return response.body();
+            } else {
+                throw new IOException("Failed to download image. Status code: " + response.statusCode());
+            }
+        } catch (IOException e) {
+            throw new ImageExceptions("Erro ao obter conteúdo de imagem", e);
+        } catch (InterruptedException e) {
+            throw new ImageExceptions("Interrupt error", e);
         }
-        in.close();
-        con.disconnect();
+
     }
 
     public List<Image> findAll() {
@@ -126,7 +130,7 @@ public class ImageService {
     public Image findImage(String id) {
         User user = userService.getCurrentUser();
 
-        Example<Image> example = Example.of(Image.builder()
+        Example<Image> example = of(Image.builder()
                 .id(id)
                 .user(user)
                 .build());

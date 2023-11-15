@@ -18,7 +18,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Builder
 @Document
 @Setter
-//@JsonInclude(NON_NULL)
+@JsonInclude(NON_NULL)
+@EqualsAndHashCode
+@ToString
 public class User {
 
     @Id

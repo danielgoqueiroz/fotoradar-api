@@ -7,6 +7,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,5 +48,14 @@ public class ImageSearchService {
 
     public List<PageResponseDTO> googleSearch(String imageUrl) {
         return findPagesByImagelink(imageUrl, "googlesearch");
+    }
+
+    public List<PageResponseDTO> searchImage(String imageUrl) {
+        List<PageResponseDTO> pageResult = new ArrayList<>();
+        List<PageResponseDTO> pageResponseDTOSBing = bingSearch(imageUrl);
+        List<PageResponseDTO> pageResponseDTOSGoogle = googleSearch(imageUrl);
+        pageResult.addAll(pageResponseDTOSBing);
+        pageResult.addAll(pageResponseDTOSGoogle);
+        return pageResult;
     }
 }

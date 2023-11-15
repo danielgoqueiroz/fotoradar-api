@@ -12,22 +12,17 @@ public class WhoisService {
 
     int WHOIS_PORT = WhoisClient.DEFAULT_PORT;
 
-    public void getInfos(String host) throws IOException {
+    public String getInfos(String host) throws IOException {
         WhoisClient whois = new WhoisClient();
         try {
             //quando dominios .com.br
 //            whois.connect(WHOIS_SERVER, WHOIS_PORT);
             //quando dominios .com .net .org
             whois.connect(WhoisClient.DEFAULT_HOST, WHOIS_PORT);
-            String query = whois.query(host);
-            System.out.println(query);
+            return whois.query(host);
         } finally {
             whois.disconnect();
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        WhoisService whoisService = new WhoisService();
-        whoisService.getInfos("danielqueiroz.com");
-    }
 }

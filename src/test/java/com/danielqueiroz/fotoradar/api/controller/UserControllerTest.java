@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Description;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,13 +47,14 @@ public class UserControllerTest {
     @LocalServerPort
     Integer randomServerPort;
 
-    @BeforeEach
-    public void setupAuthentication() {
-        SecurityContextHolder.getContext().setAuthentication(new AnonymousAuthenticationToken("key", "teste", AuthorityUtils
-                .createAuthorityList("ROLE_USER", "ROLE_ADMIN")));
-    }
+//    @BeforeEach
+//    public void setupAuthentication() {
+//        SecurityContextHolder.getContext().setAuthentication(new AnonymousAuthenticationToken("key", "teste", AuthorityUtils
+//                .createAuthorityList("ROLE_USER", "ROLE_ADMIN")));
+//    }
 
     @Test
+    @Description("Should create user")
     public void shouldCreateUser() throws Exception {
         User userStub = getUserStub();
         String userCreated = toGson(userStub);
@@ -60,11 +62,13 @@ public class UserControllerTest {
     }
 
     @Test
+    @Description("Should login and return token")
     public void shouldGenerateToken() throws Exception {
         assertNotNull(createUserAndGetToken());
     }
 
     @Test
+    @Description("Should update user")
     public void updateUser() throws Exception {
         User userStub = getUserStub();
         String updatedUser = toGson(getUserUpdatedStub());
@@ -85,7 +89,7 @@ public class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
-                .andExpect(content().string("{\"name\":null,\"username\":\"teste\",\"email\":null,\"cpf\":null,\"images\":null}"));
+                .andExpect(content().string("{\"username\":\"teste\"}"));
     }
 
     private String doLoginAndGetToken(CreateUserDTO createUserDTOStubFromUser) throws Exception {

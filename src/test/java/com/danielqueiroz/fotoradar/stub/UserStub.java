@@ -5,10 +5,11 @@ import com.danielqueiroz.fotoradar.model.User;
 public class UserStub {
 
     public static User getUserStub() {
-        User user = new User();
-        user.setUsername("teste");
-        user.setPassword("senha123");
-        return user;
+            return User.builder()
+                    .id("123")
+                    .username("teste")
+                    .password("senha123")
+                    .build();
     }
     public static User getUserUpdatedStub() {
         return User.builder()
